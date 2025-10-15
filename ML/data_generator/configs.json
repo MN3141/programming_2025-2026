@@ -1,0 +1,17 @@
+{
+    "pointsNum":20000,
+    "x_domain": [-300,300],
+    "y_domain": [-300,300],
+    "regions": [
+        {
+            "name": "Foo",
+            "coordinates":[10,150],
+            "dispersions":[0.2,0.2]
+        },
+        {
+            "name": "Bar",
+            "coordinates":[200,1],
+            "dispersions":[0.01,0]
+        }
+    ]
+}
