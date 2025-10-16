@@ -5,7 +5,7 @@ import random
 import numpy as np
 
 _configs = {}
-_threshold = 0.5 # to be refined later
+# _threshold = 0.5 # to be refined later
 
 def _check_dimensions():
 
@@ -94,7 +94,7 @@ def _plot_data(x,y):
 
     n = min(len(x), len(y))
     x, y = x[:n], y[:n]
-    pg.plot(x,y, pen=None, symbol='o',symbolBrush='r')
+    pg.plot(x,y, pen=None, symbol='o',symbolBrush=(100,100,100))
     pg.exec()
 
 _get_configs()
