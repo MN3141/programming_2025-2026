@@ -1,0 +1,26 @@
+function [y]=fade_in_out(x,procin,procout)
+
+
+nx=length(x);
+
+n_in=round((procin/100)*nx); %nr esantion intrare sau procin*nx/100
+n_out=round((procout/100)*nx); %nr esantion iesire
+
+xin=x(1:n_in);
+xmij=x((n_in+1):(nx-n_out));
+xout=x((nx-n_out+1):nx);
+
+
+pasin=(1/(n_in-1));
+Ain=0:pasin:1;
+
+yin=Ain.*xin;
+
+
+ymij=xmij;
+
+pasout=(1/(n_out-1));
+Aout=1:-pasout:0;
+yout=Aout.*xout;
+
+y=[yin,ymij,yout];
