@@ -1,0 +1,58 @@
+# Conway's Game of Life
+
+## Purpose
+Conway's Game of Life represents a simple cellular automaton (i.e. a discrete system based on grids with rules) that was shown to model complex phenomena. The purpose of this application is to implement said automaton.
+## Setup
+In order to be able to run the tool the following must be done:
+### Install Python 3.10 minimum
+### Install external modules
+```bash
+pip install -r requirements.txt
+```
+### Add desired configurations
+An example of the configuration file can be seen below:
+```json
+{
+    "iterations": 10,
+    "random": 1,
+    "map": [
+        [0,0,0,0,0,0],
+        [0,0,1,1,0,0],
+        [0,0,1,1,0,0],
+        [0,0,0,0,0,0],
+        [0,0,0,0,0,0]
+    ]
+}
+```
+where:
+- "iterations": specifies the desired number of iterations to be done
+- "random" : specifies if the application shall generate a random map or use the one configured by the user (for random value please use `1`;`0` otherwise)
+- "map" : specifies the number and state of cells used by the application
+## Architecture
+### Input/Output
+![input_output](doc/i_o.drawio.svg)
+### Business Logic
+![logic](doc/conway-Business%20Logic.drawio.svg)
+## Automaton Cell States
+Looking closely over the defined behaviour of the cells with respect to the previous states, it may be possible to model the behaviour of them by using a *finite state machine*.Thus, by modeling the logic via Moore or Mealy machines the, the logic could also be implemented hardware with basic flip-flops. Below a proposal for representation is shown (note: let `k` denote the number of found neighbours for a given cell):
+![states](doc/conway-Cell%20States.drawio.svg)
+## Results
+The following results were all tested with 10 iterations configured.
+### Map 0
+```json
+[0,0,0,0,0,0],
+[0,0,1,0,0,0],
+[0,0,1,0,0,0],
+[0,0,1,0,0,0],
+[0,0,0,0,0,0]
+```
+![map0](out/conway_2025-10-16_06-59-35.gif)
+# Map 1
+```json
+[0,0,0,0,0,0],
+[0,0,1,1,0,0],
+[0,0,1,1,0,0],
+[0,0,0,0,0,0],
+[0,0,0,0,0,0]
+```
+![map1](out/conway_2025-10-16_07-01-03.gif)
