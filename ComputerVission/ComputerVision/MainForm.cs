@@ -248,5 +248,102 @@ namespace ComputerVision
             panelDestination.BackgroundImage = workImage.GetBitMap();
             workImage.Unlock();
         }
+
+        private void histogramBtn_Click(object sender, EventArgs e)
+        {
+            if (workImage == null)
+            {
+                MessageBox.Show("No image loaded. Please load an image first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Color color;
+            image = new Bitmap(sSourceFileName);
+            workImage = new FastImage(image);
+            int[] histogram = new int[256];
+            int[] cumulativeHistogram = new int[256];
+            int[] histogramTransform = new int[256];
+
+            //Initialize histogram
+            for (int k = 0; k < 256; k++)
+            {
+                histogram[k] = 0;
+            }
+
+            workImage.Lock();
+            // Get histogram values
+            for (int i = 0; i < workImage.Width; i++)
+            {
+                for (int j = 0; j < workImage.Height; j++)
+                {
+                    color = workImage.GetPixel(i, j);
+                    byte R = color.R;
+                    byte G = color.G;
+                    byte B = color.B;
+
+                    byte average = (byte)((R + G + B) / 3);
+                    histogram[average]++;
+                }
+            }
+
+            //Compute cumulative histogram
+            cumulativeHistogram[0] = histogram[0];
+            for (int i = 1; i < 255; i++)
+                cumulativeHistogram[i] = cumulativeHistogram[i - 1] + histogram[i];
+
+            //Compute histogram transform
+            for (int i = 0; i < 255; i++)
+                histogramTransform[i] = (cumulativeHistogram[i] * 255) / (workImage.Width * workImage.Height);
+
+            for (int i = 0; i < workImage.Width; i++)
+            {
+                for (int j = 0; j < workImage.Height; j++)
+                {
+                    //Debug.Print(i.ToString()+" "+j.ToString());
+                    //Debug.Print(workImage.Height.ToString());
+                    color = workImage.GetPixel(i, j);
+                    byte R = color.R;
+                    byte G = color.G;
+                    byte B = color.B;
+
+                    byte average = (byte)((R + G + B) / 3);
+                    color = Color.FromArgb(histogramTransform[average], histogramTransform[average], histogramTransform[average]);
+                    workImage.SetPixel(i, j, color);
+
+                }
+            }
+            panelDestination.BackgroundImage = null;
+            panelDestination.BackgroundImage = workImage.GetBitMap();
+            workImage.Unlock();
+        }
+
+        private void rotateBar_Scroll(object sender, EventArgs e)
+        {
+            if (workImage == null)
+            {
+                MessageBox.Show("No image loaded. Please load an image first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Color color;
+            image = new Bitmap(sSourceFileName);
+            workImage = new FastImage(image);
+
+            double angleRadian = this.rotateBar.Value * Math.PI / 180.0;
+
+            for (int i = 0; i < workImage.Width; i++)
+            {
+                for (int j = 0; j < workImage.Height; j++)
+                {
+
+                }
+            }
+
+
+                    panelDestination.BackgroundImage = null;
+            panelDestination.BackgroundImage = workImage.GetBitMap();
+            workImage.Unlock();
+
+        }
     }
 }

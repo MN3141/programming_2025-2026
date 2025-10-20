@@ -32,14 +32,17 @@ namespace ComputerVision
             this.panelDestination = new System.Windows.Forms.Panel();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lumenBar = new System.Windows.Forms.TrackBar();
             this.button1 = new System.Windows.Forms.Button();
             this.buttonGrayscale = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.histogramBtn = new System.Windows.Forms.Button();
+            this.rotateBar = new System.Windows.Forms.TrackBar();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).BeginInit();
             this.SuspendLayout();
             // 
             // panelSource
@@ -48,7 +51,7 @@ namespace ComputerVision
             this.panelSource.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelSource.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.panelSource.Location = new System.Drawing.Point(16, 15);
-            this.panelSource.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelSource.Margin = new System.Windows.Forms.Padding(4);
             this.panelSource.Name = "panelSource";
             this.panelSource.Size = new System.Drawing.Size(425, 294);
             this.panelSource.TabIndex = 0;
@@ -59,7 +62,7 @@ namespace ComputerVision
             this.panelDestination.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelDestination.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.panelDestination.Location = new System.Drawing.Point(464, 15);
-            this.panelDestination.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelDestination.Margin = new System.Windows.Forms.Padding(4);
             this.panelDestination.Name = "panelDestination";
             this.panelDestination.Size = new System.Drawing.Size(425, 294);
             this.panelDestination.TabIndex = 1;
@@ -67,7 +70,7 @@ namespace ComputerVision
             // buttonLoad
             // 
             this.buttonLoad.Location = new System.Drawing.Point(16, 540);
-            this.buttonLoad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonLoad.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLoad.Name = "buttonLoad";
             this.buttonLoad.Size = new System.Drawing.Size(100, 28);
             this.buttonLoad.TabIndex = 2;
@@ -78,20 +81,30 @@ namespace ComputerVision
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.rotateBar);
+            this.panel1.Controls.Add(this.histogramBtn);
             this.panel1.Controls.Add(this.trackBar1);
             this.panel1.Controls.Add(this.lumenBar);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.buttonGrayscale);
             this.panel1.Location = new System.Drawing.Point(464, 334);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 233);
             this.panel1.TabIndex = 3;
             // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(242, 85);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(104, 56);
+            this.trackBar1.TabIndex = 17;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
             // lumenBar
             // 
             this.lumenBar.Location = new System.Drawing.Point(265, 172);
-            this.lumenBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lumenBar.Margin = new System.Windows.Forms.Padding(4);
             this.lumenBar.Maximum = 255;
             this.lumenBar.Minimum = -255;
             this.lumenBar.Name = "lumenBar";
@@ -102,7 +115,7 @@ namespace ComputerVision
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(143, 190);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 28);
             this.button1.TabIndex = 14;
@@ -113,7 +126,7 @@ namespace ComputerVision
             // buttonGrayscale
             // 
             this.buttonGrayscale.Location = new System.Drawing.Point(9, 191);
-            this.buttonGrayscale.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonGrayscale.Margin = new System.Windows.Forms.Padding(4);
             this.buttonGrayscale.Name = "buttonGrayscale";
             this.buttonGrayscale.Size = new System.Drawing.Size(100, 28);
             this.buttonGrayscale.TabIndex = 13;
@@ -121,13 +134,23 @@ namespace ComputerVision
             this.buttonGrayscale.UseVisualStyleBackColor = true;
             this.buttonGrayscale.Click += new System.EventHandler(this.buttonGrayscale_Click);
             // 
-            // trackBar1
+            // histogramBtn
             // 
-            this.trackBar1.Location = new System.Drawing.Point(242, 85);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(104, 56);
-            this.trackBar1.TabIndex = 17;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            this.histogramBtn.Location = new System.Drawing.Point(19, 61);
+            this.histogramBtn.Name = "histogramBtn";
+            this.histogramBtn.Size = new System.Drawing.Size(75, 23);
+            this.histogramBtn.TabIndex = 18;
+            this.histogramBtn.Text = "histogramBtn";
+            this.histogramBtn.UseVisualStyleBackColor = true;
+            this.histogramBtn.Click += new System.EventHandler(this.histogramBtn_Click);
+            // 
+            // rotateBar
+            // 
+            this.rotateBar.Location = new System.Drawing.Point(19, 3);
+            this.rotateBar.Name = "rotateBar";
+            this.rotateBar.Size = new System.Drawing.Size(104, 56);
+            this.rotateBar.TabIndex = 19;
+            this.rotateBar.Scroll += new System.EventHandler(this.rotateBar_Scroll);
             // 
             // MainForm
             // 
@@ -139,13 +162,14 @@ namespace ComputerVision
             this.Controls.Add(this.panelDestination);
             this.Controls.Add(this.panelSource);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -161,6 +185,8 @@ namespace ComputerVision
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TrackBar lumenBar;
         private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Button histogramBtn;
+        private System.Windows.Forms.TrackBar rotateBar;
     }
 }
 
