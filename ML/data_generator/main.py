@@ -2,13 +2,16 @@ import json
 import pyqtgraph as pg
 import math
 import random
-import numpy as np
 
 _configs = {}
-# _threshold = 0.5 # to be refined later
 
 def _check_dimensions():
 
+    # domains mismatch
+    if len(_configs["domains"]) < _configs["dimensions"]:
+        return False
+
+    # dispersion and region coordinates mismatch
     for region in _configs["regions"]:
         if len(region["dispersions"]) > len(region["coordinates"]):
             return False
@@ -24,23 +27,31 @@ def _get_configs():
     global _configs
     _configs["pointsNum"] = json_data["pointsNum"]
     _configs["regions"] = json_data["regions"]
-    _configs["x_domain"] = json_data["x_domain"]
-    _configs["y_domain"] = json_data["y_domain"]
+    _configs["dimensions"] = json_data["dimensions"]
+    _configs["domains"] = json_data["domains"]
+
 
     if not _check_dimensions():
-        print("Mismatch in dimensions!")
-        return
+        raise Exception("Mismatch in dimensions!")
 
 def _compute_gauss(region_axis_value, dispersion_axis_value, random_axis_value):
 
-    exponent = -(region_axis_value-random_axis_value)*(region_axis_value-random_axis_value)/2*dispersion_axis_value*dispersion_axis_value
+    if dispersion_axis_value == 0:
+        return 0
+
+    exponent = -((region_axis_value - random_axis_value)**2) / (2 * (dispersion_axis_value**2))
     gauss = math.exp(exponent)
 
     return gauss
 
-def _dump_data(x,y,regions):
+def _dump_data(points):
     file_name = "generated_points.txt"
-    file_handle = ""
+    file_handle = open(file_name,"w")
+    for line in points:
+        file_handle.write(str(line["coordinates"]) + " "+ line["region_name"])
+        file_handle.write("\n")
+
+    file_handle.close()
 
 def _generate_points():
 
@@ -50,55 +61,56 @@ def _generate_points():
 #     If a is an int, it is used directly.
 #     With version 2 (the default), a str, bytes, or bytearray object gets converted to an int and all of its bits are used.
 
-    remaining_points = _configs["pointsNum"]
-    x_values = []
-    y_values = []
-    region_names = []
+    noise_chance = 0.0001
+    dimension_num = _configs["dimensions"]
+    points_num = _configs["pointsNum"]
+    points = []
 
-    for region in _configs["regions"]:
-        print(f"Region: {region["name"]}")
-        x_region = region["coordinates"][0] # the implementation shall be more generic in the future
-        y_region = region["coordinates"][1]
+    available_points = points_num
+    regions = _configs["regions"]
 
-        x_dispersion = region["dispersions"][0]
-        y_dispersion = region["dispersions"][1]
+    for region in regions:
+        region_points_num = random.randint(1,available_points) # assign points randomly accross regions
+        region_name = region["name"]
+        region_color = tuple(random.randint(0, 255) for _ in range(3))
 
-        region_points_num = random.randint(1,remaining_points) # assign random points to each region
+        for _ in range(region_points_num):
 
-        for i in range(0,remaining_points):
-            x_random = random.uniform(_configs["x_domain"][0],_configs["x_domain"][1])
-            y_random = random.uniform(_configs["y_domain"][0],_configs["y_domain"][1])
+            dice = random.random()
 
-            gauss_x = _compute_gauss(x_region,x_dispersion,x_random)
-            gauss_y = _compute_gauss(y_region,y_dispersion,y_random)
+            if dice > noise_chance:
+                point_coords = [random.gauss(region["coordinates"][d],
+                                            region["dispersions"][d])
+                                for d in range(dimension_num)]
+            else:
+                point_coords = [random.triangular(region["coordinates"][d],
+                                            region["dispersions"][d])
+                                for d in range(dimension_num)]
+            points.append({
+                "coordinates": point_coords,
+                "region_name": region_name,
+                "color": region_color
+            })
+        if available_points < 0:
+            available_points = 0
 
-            _threshold = random.random()
-            if gauss_x > _threshold:
-                x_values.append(x_random)
+    return points
 
-            if gauss_y > _threshold:
-                y_values.append(y_random)
+def _plot_data(points):
+    x_vals = [p["coordinates"][0] for p in points]
+    y_vals = [p["coordinates"][1] for p in points]
+    colors = [p["color"] for p in points]
 
-            region_names.append(region)
+    scatter = pg.ScatterPlotItem(x=x_vals, y=y_vals, brush=colors, size=10, pen=None)
 
-        remaining_points = remaining_points - region_points_num
-
-        if remaining_points <= 0:
-            print(f"No more points for {region["name"]}")
-            break
-
-
-    return (x_values,y_values,region_names)
-
-def _plot_data(x,y):
-
-    n = min(len(x), len(y))
-    x, y = x[:n], y[:n]
-    pg.plot(x,y, pen=None, symbol='o',symbolBrush=(100,100,100))
+    plot_widget = pg.plot(title="Generated Points")
+    plot_widget.addItem(scatter)
     pg.exec()
 
+
 _get_configs()
-(x,y,regions) = _generate_points()
-_plot_data(x,y)
+points = _generate_points()
+_dump_data(points)
+_plot_data(points)
 
 
