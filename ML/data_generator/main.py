@@ -45,10 +45,11 @@ def _compute_gauss(region_axis_value, dispersion_axis_value, random_axis_value):
     return gauss
 
 def _dump_data(points):
-    file_name = "generated_points.txt"
+    file_name = "generated_points.ml"
     file_handle = open(file_name,"w")
+    random.shuffle(points)
     for line in points:
-        file_handle.write(str(line["coordinates"]) + " "+ line["region_name"])
+        file_handle.write(str(line["coordinates"]) + ":"+ line["region_name"])
         file_handle.write("\n")
 
     file_handle.close()
@@ -61,7 +62,7 @@ def _generate_points():
 #     If a is an int, it is used directly.
 #     With version 2 (the default), a str, bytes, or bytearray object gets converted to an int and all of its bits are used.
 
-    noise_chance = 0.0001
+    noise_chance = random.uniform(0,0.1)
     dimension_num = _configs["dimensions"]
     points_num = _configs["pointsNum"]
     points = []
@@ -70,7 +71,8 @@ def _generate_points():
     regions = _configs["regions"]
 
     for region in regions:
-        region_points_num = random.randint(1,available_points) # assign points randomly accross regions
+        region_points_num = random.randint(1,available_points)
+
         region_name = region["name"]
         region_color = tuple(random.randint(0, 255) for _ in range(3))
 
@@ -107,7 +109,7 @@ def _plot_data(points):
     plot_widget.addItem(scatter)
     pg.exec()
 
-
+random.seed(a=None, version=2)
 _get_configs()
 points = _generate_points()
 _dump_data(points)

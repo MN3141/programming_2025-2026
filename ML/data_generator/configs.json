@@ -10,13 +10,13 @@
     "regions": [
         {
             "name": "Foo",
-            "coordinates":[10,150,1,1],
+            "coordinates":[10,10,1,1],
             "dispersions":[0.7,0.2,0.1,0.1]
         },
         {
             "name": "Bar",
-            "coordinates":[200,1,2,3],
-            "dispersions":[0.01,0.2,0.1,0.4]
+            "coordinates":[200,-100,2,3],
+            "dispersions":[10,20,0.1,0.4]
         },
             {
             "name": "Ion",

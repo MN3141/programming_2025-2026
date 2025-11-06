@@ -1,0 +1,12 @@
+{
+    "clustersNum": 6,
+    "generated_points_path":"C:\\Arhiva_ULBS\\Proiecte\\Anul_IV\\programming_2025-2026\\ML\\data_generator\\generated_points.ml",
+    "placement_method":"random",
+    "similarity_metric":"euclid",
+    "domains":[
+        [-300,300],
+        [-300,300],
+        [-300,300],
+        [-300,300]
+    ]
+}
