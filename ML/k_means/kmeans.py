@@ -3,8 +3,7 @@ class Point:
         self.coordinates = coordinates
         self.colour = ["155","155","155"]
 
-class Example(Point):
+class Centroid(Point):
     def __init__(self, coordinates):
         super().__init__(coordinates)
-        self.assigned_centroid = None
-
+        self.assigned_points = []
