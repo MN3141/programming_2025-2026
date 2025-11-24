@@ -32,17 +32,26 @@ namespace ComputerVision
             this.panelDestination = new System.Windows.Forms.Panel();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.unsharpBtn = new System.Windows.Forms.Button();
+            this.ftsBtn = new System.Windows.Forms.Button();
+            this.median2Btn = new System.Windows.Forms.Button();
+            this.markovBtn = new System.Windows.Forms.Button();
+            this.medianBtn = new System.Windows.Forms.Button();
+            this.ftjTxtBox = new System.Windows.Forms.TextBox();
+            this.ftjBtn = new System.Windows.Forms.Button();
+            this.rotateBar = new System.Windows.Forms.TrackBar();
+            this.histogramBtn = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lumenBar = new System.Windows.Forms.TrackBar();
             this.button1 = new System.Windows.Forms.Button();
             this.buttonGrayscale = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.histogramBtn = new System.Windows.Forms.Button();
-            this.rotateBar = new System.Windows.Forms.TrackBar();
+            this.Kirsch = new System.Windows.Forms.Button();
+            this.laplaceBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).BeginInit();
             this.SuspendLayout();
             // 
             // panelSource
@@ -81,6 +90,15 @@ namespace ComputerVision
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.laplaceBtn);
+            this.panel1.Controls.Add(this.Kirsch);
+            this.panel1.Controls.Add(this.unsharpBtn);
+            this.panel1.Controls.Add(this.ftsBtn);
+            this.panel1.Controls.Add(this.median2Btn);
+            this.panel1.Controls.Add(this.markovBtn);
+            this.panel1.Controls.Add(this.medianBtn);
+            this.panel1.Controls.Add(this.ftjTxtBox);
+            this.panel1.Controls.Add(this.ftjBtn);
             this.panel1.Controls.Add(this.rotateBar);
             this.panel1.Controls.Add(this.histogramBtn);
             this.panel1.Controls.Add(this.trackBar1);
@@ -92,6 +110,91 @@ namespace ComputerVision
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(426, 233);
             this.panel1.TabIndex = 3;
+            // 
+            // unsharpBtn
+            // 
+            this.unsharpBtn.Location = new System.Drawing.Point(165, 4);
+            this.unsharpBtn.Name = "unsharpBtn";
+            this.unsharpBtn.Size = new System.Drawing.Size(75, 23);
+            this.unsharpBtn.TabIndex = 26;
+            this.unsharpBtn.Text = "Unsharp Masking";
+            this.unsharpBtn.UseVisualStyleBackColor = true;
+            this.unsharpBtn.Click += new System.EventHandler(this.unsharpBtn_Click);
+            // 
+            // ftsBtn
+            // 
+            this.ftsBtn.Location = new System.Drawing.Point(346, 26);
+            this.ftsBtn.Name = "ftsBtn";
+            this.ftsBtn.Size = new System.Drawing.Size(75, 23);
+            this.ftsBtn.TabIndex = 25;
+            this.ftsBtn.Text = "FTS";
+            this.ftsBtn.UseVisualStyleBackColor = true;
+            this.ftsBtn.Click += new System.EventHandler(this.ftsBtn_Click);
+            // 
+            // median2Btn
+            // 
+            this.median2Btn.Location = new System.Drawing.Point(154, 51);
+            this.median2Btn.Name = "median2Btn";
+            this.median2Btn.Size = new System.Drawing.Size(75, 23);
+            this.median2Btn.TabIndex = 24;
+            this.median2Btn.Text = "Median2";
+            this.median2Btn.UseVisualStyleBackColor = true;
+            this.median2Btn.Click += new System.EventHandler(this.median2Btn_Click);
+            // 
+            // markovBtn
+            // 
+            this.markovBtn.Location = new System.Drawing.Point(271, 61);
+            this.markovBtn.Name = "markovBtn";
+            this.markovBtn.Size = new System.Drawing.Size(75, 23);
+            this.markovBtn.TabIndex = 23;
+            this.markovBtn.Text = "Markov";
+            this.markovBtn.UseVisualStyleBackColor = true;
+            this.markovBtn.Click += new System.EventHandler(this.markovBtn_Click);
+            // 
+            // medianBtn
+            // 
+            this.medianBtn.Location = new System.Drawing.Point(154, 89);
+            this.medianBtn.Name = "medianBtn";
+            this.medianBtn.Size = new System.Drawing.Size(75, 23);
+            this.medianBtn.TabIndex = 22;
+            this.medianBtn.Text = "Median";
+            this.medianBtn.UseVisualStyleBackColor = true;
+            this.medianBtn.Click += new System.EventHandler(this.medianBtn_Click);
+            // 
+            // ftjTxtBox
+            // 
+            this.ftjTxtBox.Location = new System.Drawing.Point(228, 26);
+            this.ftjTxtBox.Name = "ftjTxtBox";
+            this.ftjTxtBox.Size = new System.Drawing.Size(100, 22);
+            this.ftjTxtBox.TabIndex = 21;
+            // 
+            // ftjBtn
+            // 
+            this.ftjBtn.Location = new System.Drawing.Point(346, 61);
+            this.ftjBtn.Name = "ftjBtn";
+            this.ftjBtn.Size = new System.Drawing.Size(75, 23);
+            this.ftjBtn.TabIndex = 20;
+            this.ftjBtn.Text = "FTJ";
+            this.ftjBtn.UseVisualStyleBackColor = true;
+            this.ftjBtn.Click += new System.EventHandler(this.ftjBtn_Click);
+            // 
+            // rotateBar
+            // 
+            this.rotateBar.Location = new System.Drawing.Point(19, 3);
+            this.rotateBar.Name = "rotateBar";
+            this.rotateBar.Size = new System.Drawing.Size(104, 56);
+            this.rotateBar.TabIndex = 19;
+            this.rotateBar.Scroll += new System.EventHandler(this.rotateBar_Scroll);
+            // 
+            // histogramBtn
+            // 
+            this.histogramBtn.Location = new System.Drawing.Point(19, 61);
+            this.histogramBtn.Name = "histogramBtn";
+            this.histogramBtn.Size = new System.Drawing.Size(75, 23);
+            this.histogramBtn.TabIndex = 18;
+            this.histogramBtn.Text = "histogramBtn";
+            this.histogramBtn.UseVisualStyleBackColor = true;
+            this.histogramBtn.Click += new System.EventHandler(this.histogramBtn_Click);
             // 
             // trackBar1
             // 
@@ -134,23 +237,25 @@ namespace ComputerVision
             this.buttonGrayscale.UseVisualStyleBackColor = true;
             this.buttonGrayscale.Click += new System.EventHandler(this.buttonGrayscale_Click);
             // 
-            // histogramBtn
+            // Kirsch
             // 
-            this.histogramBtn.Location = new System.Drawing.Point(19, 61);
-            this.histogramBtn.Name = "histogramBtn";
-            this.histogramBtn.Size = new System.Drawing.Size(75, 23);
-            this.histogramBtn.TabIndex = 18;
-            this.histogramBtn.Text = "histogramBtn";
-            this.histogramBtn.UseVisualStyleBackColor = true;
-            this.histogramBtn.Click += new System.EventHandler(this.histogramBtn_Click);
+            this.Kirsch.Location = new System.Drawing.Point(19, 90);
+            this.Kirsch.Name = "Kirsch";
+            this.Kirsch.Size = new System.Drawing.Size(75, 23);
+            this.Kirsch.TabIndex = 27;
+            this.Kirsch.Text = "kirschBtn";
+            this.Kirsch.UseVisualStyleBackColor = true;
+            this.Kirsch.Click += new System.EventHandler(this.Kirsch_Click);
             // 
-            // rotateBar
+            // laplaceBtn
             // 
-            this.rotateBar.Location = new System.Drawing.Point(19, 3);
-            this.rotateBar.Name = "rotateBar";
-            this.rotateBar.Size = new System.Drawing.Size(104, 56);
-            this.rotateBar.TabIndex = 19;
-            this.rotateBar.Scroll += new System.EventHandler(this.rotateBar_Scroll);
+            this.laplaceBtn.Location = new System.Drawing.Point(73, 36);
+            this.laplaceBtn.Name = "laplaceBtn";
+            this.laplaceBtn.Size = new System.Drawing.Size(75, 23);
+            this.laplaceBtn.TabIndex = 28;
+            this.laplaceBtn.Text = "Laplace";
+            this.laplaceBtn.UseVisualStyleBackColor = true;
+            this.laplaceBtn.Click += new System.EventHandler(this.laplaceBtn_Click);
             // 
             // MainForm
             // 
@@ -167,9 +272,9 @@ namespace ComputerVision
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -187,6 +292,15 @@ namespace ComputerVision
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button histogramBtn;
         private System.Windows.Forms.TrackBar rotateBar;
+        private System.Windows.Forms.TextBox ftjTxtBox;
+        private System.Windows.Forms.Button ftjBtn;
+        private System.Windows.Forms.Button medianBtn;
+        private System.Windows.Forms.Button markovBtn;
+        private System.Windows.Forms.Button median2Btn;
+        private System.Windows.Forms.Button ftsBtn;
+        private System.Windows.Forms.Button unsharpBtn;
+        private System.Windows.Forms.Button Kirsch;
+        private System.Windows.Forms.Button laplaceBtn;
     }
 }
 

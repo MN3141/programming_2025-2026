@@ -3,7 +3,7 @@
 // Removing this macro enables support for 32bpp (4 bytes per pixel) image formats, like .png, which include an alpha channel for transparency,
 // but will cause a minor performance loss.
 // To disable LOW_COMPAT mode, simply comment the line below and re-compile the program.
-#define LOW_COMPAT 
+//#define LOW_COMPAT 
 
 using System;
 using System.Drawing;
