@@ -37,8 +37,6 @@ def _get_noise(x,y): # our fit function
 def main():
     _init()
 
-    mat = np.array([[_get_noise(i/xpix, j/ypix) for j in range(xpix)] for i in range(ypix)])
-    ok = True
     particle_number = configs["particle_number"]
     best_global_config = 99999
     search_iterations = configs["iteration_limit"]

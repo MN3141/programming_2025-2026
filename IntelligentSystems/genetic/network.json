@@ -1,0 +1,32 @@
+{
+    "Sibiu":{
+        "Aiud":1.36,
+        "Victoria":0.57,
+        "Tritenii de Jos":1.50,
+        "Petrosani":2.20
+    },
+    "Aiud":{
+        "Sibiu":1.36,
+        "Victoria":2.41,
+        "Tritenii de Jos":0.47,
+        "Petrosani":2.8
+    },
+    "Victoria":{
+        "Aiud":2.41,
+        "Sibiu":0.57,
+        "Tritenii de Jos":2.43,
+        "Petrosani":3.36
+    },
+    "Tritenii de Jos":{
+        "Aiud":0.47,
+        "Sibiu":1.50,
+        "Victoria":2.43,
+        "Petrosani":2.46
+    },
+    "Petrosani":{
+        "Aiud":2.8,
+        "Sibiu":2.20,
+        "Victoria":3.36,
+        "Tritenii de Jos":2.26
+    }
+}
