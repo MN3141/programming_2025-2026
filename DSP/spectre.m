@@ -34,7 +34,7 @@ hold off
 
 figure(2)
 hold on
-plot(freq,magnitudes,"blue")
+plot(magnitudes,"blue")
 grid on
 title("Semnal sinusoidal in domeniul frecv")
 xlabel("f[Hz]")
