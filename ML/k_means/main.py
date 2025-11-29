@@ -1,9 +1,10 @@
 import pyqtgraph as pg
-from pyqtgraph.Qt import QtCore, QtWidgets
+from pyqtgraph.Qt import QtCore
 import time
 import random
 import json
 import numpy as np
+import multiprocessing as mp
 from kmeans import Point,Centroid
 
 configs = {}
@@ -15,6 +16,7 @@ last_cost = 0
 examples_plot = pg.ScatterPlotItem(size=10, pen=None,symbol="x")
 centroids_plot = pg.ScatterPlotItem(size=10, pen=None,symbol="t")
 timer = QtCore.QTimer()
+cpu_cores = 2 # TBD
 
 def _get_input():
 
@@ -55,6 +57,19 @@ def _compute_euclid(point_coordinates,centroid_coordinates):
         sum = sum + diff
 
     return np.sqrt(sum)
+
+def _compute_manhattan(point_coordinates,centroid_coordinates):
+
+    if len(point_coordinates) != len(centroid_coordinates):
+        raise Exception("MANHATTAN: Mismatch in dimensions!")
+    n = len(point_coordinates)
+    sum = 0
+
+    for i in range(n):
+        diff = abs(point_coordinates[i]-centroid_coordinates[i])
+        sum = sum + diff
+
+    return sum
 
 def _random_placement():
 
@@ -109,11 +124,10 @@ def _compute_energy_cost():
 
 def _compute_distances(point_index0,point_index1):
 
-    min_distance = 999999
-
     global examples,centroids,_similarity_metric
     centroid_num = configs["clustersNum"]
     for i in range(point_index0,point_index1):
+        min_distance = 999999
         centroid_index = -1
         for j in range(centroid_num):
             distance = _similarity_metric(examples[i].coordinates,centroids[j].coordinates)
@@ -123,18 +137,22 @@ def _compute_distances(point_index0,point_index1):
         centroids[centroid_index].assigned_points.append(examples[i])
         examples[i].colour = centroids[centroid_index].colour
 
-def run_epoch():
+def _run_epoch():
     global epoch_counter,last_cost,centroids, examples,examples_plot,centroids_plot,timer
 
     num_examples = len(examples)
     num_centroids = len(centroids)
     epoch_counter = epoch_counter + 1
 
+    for i in range(0,num_centroids):
+        centroids[i].assigned_points = []
+
     print(f"Epoch:{epoch_counter}")
 
     _compute_distances(0,num_examples)
     _move_centroids()
     current_cost = _compute_energy_cost()
+    print(f"Energy Cost:{current_cost}")
 
     if current_cost - last_cost == 0:
         timer.stop()
@@ -151,6 +169,7 @@ def run_epoch():
             y_examples_val.append(centroids[i].assigned_points[j].coordinates[1])
         centroid_colours.append(centroids[i].colour)
 
+    _dump_centroids()
     example_colours = [e.colour for e in examples]
     x_centroid_vals = [p.coordinates[0] for p in centroids]
     y_centroid_vals = [p.coordinates[1] for p in centroids]
@@ -159,8 +178,21 @@ def run_epoch():
     centroids_plot.setData(x=x_centroid_vals,y=y_centroid_vals,brush=centroid_colours)
 
     last_cost = current_cost
-    for i in range(0,num_centroids):
-        centroids[i].assigned_points = [] # reset point list for next epoch
+
+def _dump_centroids():
+    global centroids
+
+    fout = "centroids.ml"
+    file_handle = open(fout,"w")
+    dimensions = len(centroids[0].coordinates)
+
+    for centroid in centroids:
+        line = ""
+        for dim in range(0,dimensions):
+            line += " " + str(centroid.coordinates[dim])
+        print(line)
+        file_handle.write(line+"\n")
+    file_handle.close()
 
 def main():
 
@@ -170,6 +202,8 @@ def main():
     _get_input()
     if configs["similarity_metric"] == "euclid":
         _similarity_metric = _compute_euclid
+    elif configs["similarity_metric"] == "manhattan":
+        _similarity_metric = _compute_manhattan
 
     _read_examples()
     _place_centroids()
@@ -179,12 +213,10 @@ def main():
     plot_widget.addItem(examples_plot)
     plot_widget.addItem(centroids_plot)
 
-    timer.timeout.connect(run_epoch)
+    timer.timeout.connect(_run_epoch)
     timer.start(0)
 
     end_time = time.perf_counter()
     print(f"Application took: {end_time-start_time} seconds.")
     pg.exec()
-
-
 main()
