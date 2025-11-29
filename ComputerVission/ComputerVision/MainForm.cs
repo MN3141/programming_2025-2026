@@ -1096,5 +1096,171 @@ namespace ComputerVision
             workImage.Unlock();
 
         }
+
+        private void freiChenBtn_Click(object sender, EventArgs e)
+        {
+            if (workImage == null)
+            {
+                MessageBox.Show("No image loaded. Please load an image first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            image = new Bitmap(sSourceFileName);
+            workImage = new FastImage(image);
+
+            FastImage originalImage = new FastImage(new Bitmap(sSourceFileName));
+            Color color;
+
+            double[,] F1 = {
+            { 1,  Math.Sqrt(2),  1 },
+            { 0,  0,             0 },
+            { -1, -Math.Sqrt(2), -1 }
+        };
+
+            double[,] F2 = {
+            { 1, 0, -1 },
+            { Math.Sqrt(2), 0, -Math.Sqrt(2) },
+            { 1, 0, -1 }
+        };
+
+            double[,] F3 = {
+            { 0, -1, Math.Sqrt(2) },
+            { 1,  0, -1 },
+            { -Math.Sqrt(2), 1, 0 }
+        };
+
+            double[,] F4 = {
+            { Math.Sqrt(2), -1, 0 },
+            { -1, 0, 1 },
+            { 0, 1, -Math.Sqrt(2) }
+        };
+
+            double[,] F5 = {
+            { 0, 1, 0 },
+            { -1, 0, -1 },
+            { 0, 1, 0 }
+        };
+
+            double[,] F6 = {
+            { -1, 0, 1 },
+            {  0, 0, 0 },
+            {  1, 0, -1 }
+        };
+
+            double[,] F7 = {
+            { 1, -2, 1 },
+            { -2, 4, -2 },
+            { 1, -2, 1 }
+        };
+
+            double[,] F8 = {
+            { -2, 1, -2 },
+            {  1, 4, 1 },
+            { -2, 1, -2 }
+        };
+
+            double[,] F9 = {
+            { 1.0/9, 1.0/9, 1.0/9 },
+            { 1.0/9, 1.0/9, 1.0/9 },
+            { 1.0/9, 1.0/9, 1.0/9 }
+};
+            workImage.Lock();
+            originalImage.Lock();
+
+            for (int i = 1; i < originalImage.Width - 1; i++)
+            {
+                for (int j = 0; j < originalImage.Height - 1; j++)
+                {
+                    double[] sumRed = new double[9];
+                    double[] sumGreen = new double[9];
+                    double[] sumBlue = new double[9];
+                    for (int row = i - 1; row <= i + 1; row++)
+                    {
+                        for (int col = j - 1; col <= j + 1; col++)
+                        {
+
+                            color = originalImage.GetPixel(row, col);
+                            byte R = color.R;
+                            byte G = color.G;
+                            byte B = color.B;
+                            sumRed[0] += R * F1[row - (i - 1),col - (j - 1)];
+                            sumRed[1] += R * F2[row - (i - 1), col - (j - 1)];
+                            sumRed[2] += R * F3[row - (i - 1), col - (j - 1)];
+                            sumRed[3] += R * F4[row - (i - 1), col - (j - 1)];
+                            sumRed[4] += R * F5[row - (i - 1), col - (j - 1)];
+                            sumRed[5] += R * F6[row - (i - 1), col - (j - 1)];
+                            sumRed[6] += R * F7[row - (i - 1), col - (j - 1)];
+                            sumRed[7] += R * F8[row - (i - 1), col - (j - 1)];
+                            sumRed[8] += R * F9[row - (i - 1), col - (j - 1)];
+
+                            sumBlue[0] += R * F1[row - (i - 1), col - (j - 1)];
+                            sumBlue[1] += R * F2[row - (i - 1), col - (j - 1)];
+                            sumBlue[2] += R * F3[row - (i - 1), col - (j - 1)];
+                            sumBlue[3] += R * F4[row - (i - 1), col - (j - 1)];
+                            sumBlue[4] += R * F5[row - (i - 1), col - (j - 1)];
+                            sumBlue[5] += R * F6[row - (i - 1), col - (j - 1)];
+                            sumBlue[6] += R * F7[row - (i - 1), col - (j - 1)];
+                            sumBlue[7] += R * F8[row - (i - 1), col - (j - 1)];
+                            sumBlue[8] += R * F9[row - (i - 1), col - (j - 1)];
+
+                            sumGreen[0] += R * F1[row - (i - 1), col - (j - 1)];
+                            sumGreen[1] += R * F2[row - (i - 1), col - (j - 1)];
+                            sumGreen[2] += R * F3[row - (i - 1), col - (j - 1)];
+                            sumGreen[3] += R * F4[row - (i - 1), col - (j - 1)];
+                            sumGreen[4] += R * F5[row - (i - 1), col - (j - 1)];
+                            sumGreen[5] += R * F6[row - (i - 1), col - (j - 1)];
+                            sumGreen[6] += R * F7[row - (i - 1), col - (j - 1)];
+                            sumGreen[7] += R * F8[row - (i - 1), col - (j - 1)];
+                            sumGreen[8] += R * F9[row - (i - 1), col - (j - 1)];
+                        }
+                    }
+
+                    double rRed = 0;
+                    double rGreen = 0;
+                    double rBlue = 0;
+
+                    double sumRedUpper = 0;
+                    double sumRedLower = 0;
+                    double sumGreenUpper = 0;
+                    double sumGreenLower = 0;
+                    double sumBlueUpper = 0;
+                    double sumBlueLower = 0;
+
+                    sumRedUpper = Math.Pow(sumRed[0], 2) + Math.Pow(sumRed[1], 2) + Math.Pow(sumRed[2], 2) + Math.Pow(sumRed[3], 2);
+                    sumRedLower = sumRedUpper + Math.Pow(sumRed[4], 2) + Math.Pow(sumRed[5], 2) + Math.Pow(sumRed[6], 2) + Math.Pow(sumRed[7], 2);
+                    rRed = Math.Sqrt(sumRedUpper / sumRedLower) * 255;
+
+                    sumGreenUpper = Math.Pow(sumGreen[0], 2) + Math.Pow(sumGreen[1], 2) + Math.Pow(sumGreen[2], 2) + Math.Pow(sumGreen[3], 2);
+                    sumGreenLower = sumBlueUpper + Math.Pow(sumGreen[4], 2) + Math.Pow(sumGreen[5], 2) + Math.Pow(sumGreen[6], 2) + Math.Pow(sumGreen[7], 2);
+                    rGreen = Math.Sqrt(sumGreenUpper / sumGreenLower) * 255;
+                    sumBlueUpper = Math.Pow(sumRed[0], 2) + Math.Pow(sumRed[1], 2) + Math.Pow(sumRed[2], 2) + Math.Pow(sumRed[3], 2);
+                    sumBlueLower = sumBlueUpper + Math.Pow(sumRed[4], 2) + Math.Pow(sumRed[5], 2) + Math.Pow(sumRed[6], 2) + Math.Pow(sumRed[7], 2);
+                    rGreen = Math.Sqrt(sumBlueUpper / sumBlueLower) * 255;
+
+                    if (rRed > 255)
+                        rRed = 255;
+                    else if (rRed < 0)
+                        rRed = 0;
+
+                    if (rGreen > 255)
+                        rGreen = 255;
+                    else if (rGreen < 0)
+                        rGreen = 0;
+
+                    if (rBlue > 255)
+                        rBlue = 255;
+                    else if (rBlue < 0)
+                        rBlue = 0;
+                        color = Color.FromArgb((int)rRed, (int)rGreen, (int)rBlue);
+                    workImage.SetPixel(i, j, color);
+                }
+            }
+
+            panelDestination.BackgroundImage = null;
+            panelDestination.BackgroundImage = workImage.GetBitMap();
+            originalImage.Unlock();
+            workImage.Unlock();
+
+        }
     }
 }

@@ -32,6 +32,8 @@ namespace ComputerVision
             this.panelDestination = new System.Windows.Forms.Panel();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.laplaceBtn = new System.Windows.Forms.Button();
+            this.Kirsch = new System.Windows.Forms.Button();
             this.unsharpBtn = new System.Windows.Forms.Button();
             this.ftsBtn = new System.Windows.Forms.Button();
             this.median2Btn = new System.Windows.Forms.Button();
@@ -46,8 +48,7 @@ namespace ComputerVision
             this.button1 = new System.Windows.Forms.Button();
             this.buttonGrayscale = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.Kirsch = new System.Windows.Forms.Button();
-            this.laplaceBtn = new System.Windows.Forms.Button();
+            this.freiChenBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -111,6 +112,26 @@ namespace ComputerVision
             this.panel1.Size = new System.Drawing.Size(426, 233);
             this.panel1.TabIndex = 3;
             // 
+            // laplaceBtn
+            // 
+            this.laplaceBtn.Location = new System.Drawing.Point(346, 4);
+            this.laplaceBtn.Name = "laplaceBtn";
+            this.laplaceBtn.Size = new System.Drawing.Size(75, 23);
+            this.laplaceBtn.TabIndex = 28;
+            this.laplaceBtn.Text = "Laplace";
+            this.laplaceBtn.UseVisualStyleBackColor = true;
+            this.laplaceBtn.Click += new System.EventHandler(this.laplaceBtn_Click);
+            // 
+            // Kirsch
+            // 
+            this.Kirsch.Location = new System.Drawing.Point(19, 90);
+            this.Kirsch.Name = "Kirsch";
+            this.Kirsch.Size = new System.Drawing.Size(75, 23);
+            this.Kirsch.TabIndex = 27;
+            this.Kirsch.Text = "kirschBtn";
+            this.Kirsch.UseVisualStyleBackColor = true;
+            this.Kirsch.Click += new System.EventHandler(this.Kirsch_Click);
+            // 
             // unsharpBtn
             // 
             this.unsharpBtn.Location = new System.Drawing.Point(165, 4);
@@ -133,7 +154,7 @@ namespace ComputerVision
             // 
             // median2Btn
             // 
-            this.median2Btn.Location = new System.Drawing.Point(154, 51);
+            this.median2Btn.Location = new System.Drawing.Point(154, 65);
             this.median2Btn.Name = "median2Btn";
             this.median2Btn.Size = new System.Drawing.Size(75, 23);
             this.median2Btn.TabIndex = 24;
@@ -237,31 +258,22 @@ namespace ComputerVision
             this.buttonGrayscale.UseVisualStyleBackColor = true;
             this.buttonGrayscale.Click += new System.EventHandler(this.buttonGrayscale_Click);
             // 
-            // Kirsch
+            // freiChenBtn
             // 
-            this.Kirsch.Location = new System.Drawing.Point(19, 90);
-            this.Kirsch.Name = "Kirsch";
-            this.Kirsch.Size = new System.Drawing.Size(75, 23);
-            this.Kirsch.TabIndex = 27;
-            this.Kirsch.Text = "kirschBtn";
-            this.Kirsch.UseVisualStyleBackColor = true;
-            this.Kirsch.Click += new System.EventHandler(this.Kirsch_Click);
-            // 
-            // laplaceBtn
-            // 
-            this.laplaceBtn.Location = new System.Drawing.Point(73, 36);
-            this.laplaceBtn.Name = "laplaceBtn";
-            this.laplaceBtn.Size = new System.Drawing.Size(75, 23);
-            this.laplaceBtn.TabIndex = 28;
-            this.laplaceBtn.Text = "Laplace";
-            this.laplaceBtn.UseVisualStyleBackColor = true;
-            this.laplaceBtn.Click += new System.EventHandler(this.laplaceBtn_Click);
+            this.freiChenBtn.Location = new System.Drawing.Point(16, 339);
+            this.freiChenBtn.Name = "freiChenBtn";
+            this.freiChenBtn.Size = new System.Drawing.Size(75, 23);
+            this.freiChenBtn.TabIndex = 29;
+            this.freiChenBtn.Text = "Frei-Chen";
+            this.freiChenBtn.UseVisualStyleBackColor = true;
+            this.freiChenBtn.Click += new System.EventHandler(this.freiChenBtn_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 582);
+            this.Controls.Add(this.freiChenBtn);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonLoad);
             this.Controls.Add(this.panelDestination);
@@ -301,6 +313,7 @@ namespace ComputerVision
         private System.Windows.Forms.Button unsharpBtn;
         private System.Windows.Forms.Button Kirsch;
         private System.Windows.Forms.Button laplaceBtn;
+        private System.Windows.Forms.Button freiChenBtn;
     }
 }
 
