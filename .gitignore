@@ -1,2 +1,3 @@
 IntelligentSystems/conway/out/*
 __pycache__
+*.log

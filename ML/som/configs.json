@@ -1,0 +1,10 @@
+{
+    "grid_no": 10,
+    "generated_points_path":"C:\\Arhiva_ULBS\\Proiecte\\Anul_IV\\programming_2025-2026\\ML\\data_generator\\generated_points.ml",
+    "domains":[
+        [-300,300],
+        [-300,300],
+        [-300,300],
+        [-300,300]
+    ]
+}
