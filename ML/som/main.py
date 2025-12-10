@@ -81,43 +81,73 @@ def _get_examples():
 
 def _init_ui():
 
-    global app_logger
+    global app_logger, configs
 
     guiApp = qwidgets.QApplication([])
     mainWindow = qwidgets.QWidget()
+    app_logger.info(f"Window obj addr: {hex(id(mainWindow))}")
     mainWindow.setWindowTitle("Self Organizing Maps")
 
     btnStep = qwidgets.QPushButton("Step")
     epochLabel = qwidgets.QLabel("Epochs: 0")
     plotWidget = pg.PlotWidget(title="SOM 2D")
+    plotWidget.showGrid(x=True, y=True, alpha=0.3)
     layout = qwidgets.QVBoxLayout()
 
     layout.addWidget(plotWidget)
     layout.addWidget(btnStep)
     layout.addWidget(epochLabel)
+    mainWindow.plotWidget = plotWidget
     mainWindow.setLayout(layout)
 
-    thread_handle = qcore.QThread()
-    worker = MLWorker()
-    worker.moveToThread(thread_handle)
-
-    thread_handle.start()
-    btnStep.clicked.connect(worker.stepEpochSlot)
-    worker.resultReady.connect(lambda v: epochLabel.setText(f"Epochs: {v}"))
-
-    mainWindow.thread = thread_handle
-    mainWindow.worker = worker
+    mainWindow.btnStep = btnStep
+    mainWindow.epochLabel = epochLabel
 
     app_logger.info("GUI set up!")
     return guiApp, mainWindow
+
+
+def _init_worker(window_qt_obj, examples_list):
+
+    global app_logger
+
+    app_logger.info(f"Function window obj addr: {hex(id(window_qt_obj))}")
+    thread_handle = qcore.QThread()
+    worker = MLWorker(configs["epochs_no"], examples_list, configs["domains"])
+    worker.moveToThread(thread_handle)
+
+    thread_handle.start()
+    window_qt_obj.btnStep.clicked.connect(worker.stepEpochSlot)
+    worker.resultReady.connect(
+        lambda v: window_qt_obj.epochLabel.setText(f"Epochs: {v}")
+    )
+
+    window_qt_obj.thread = thread_handle
+    window_qt_obj.worker = worker
+
+
+def _plot_examples(examples, plot_widget):
+
+    examples_plot = pg.ScatterPlotItem(size=10, pen=None, symbol="x")
+    x_vals = [p.coordinates[0] for p in examples]
+    y_vals = [p.coordinates[1] for p in examples]
+
+    examples_plot.setData(x=x_vals, y=y_vals, brush="blue")
+    plot_widget.addItem(examples_plot)
 
 
 def main():
 
     _init_logger()
     _get_input()
+
     examples = _get_examples()
     gui_app, main_window = _init_ui()
+
+    app_logger.info(f"Window obj addr: {hex(id(main_window))}")
+    _plot_examples(examples, main_window.plotWidget)
+
+    _init_worker(main_window, examples)
     main_window.show()
     gui_app.exec()
 
