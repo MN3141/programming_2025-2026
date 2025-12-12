@@ -12,7 +12,7 @@ class Neuron(ABC):
         pass
 
     @abstractmethod
-    def compute_output(input_vector):
+    def compute_output(self, input_vector):
         pass
 
 
@@ -22,5 +22,5 @@ class SOMNeuron(Neuron):
         self._bias = 0
         self._weights = np.array([])
 
-    def compute_output(input_vector):
-        return 0
+    def compute_output(self, input_vector):
+        return self._weights

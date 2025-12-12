@@ -91,7 +91,11 @@ def _init_ui():
     btnStep = qwidgets.QPushButton("Step")
     epochLabel = qwidgets.QLabel("Epochs: 0")
     plotWidget = pg.PlotWidget(title="SOM 2D")
+
     plotWidget.showGrid(x=True, y=True, alpha=0.3)
+    neuron_plot = pg.ScatterPlotItem(size=10, pen=None, symbol="o", brush="red")
+    plotWidget.addItem(neuron_plot)
+    mainWindow.neurons_plot = neuron_plot
     layout = qwidgets.QVBoxLayout()
 
     layout.addWidget(plotWidget)
@@ -119,7 +123,7 @@ def _init_worker(window_qt_obj, examples_list):
     thread_handle.start()
     window_qt_obj.btnStep.clicked.connect(worker.stepEpochSlot)
     worker.resultReady.connect(
-        lambda v: window_qt_obj.epochLabel.setText(f"Epochs: {v}")
+        lambda epoch, positions: _update_neuron_plot(window_qt_obj, epoch, positions)
     )
 
     window_qt_obj.thread = thread_handle
@@ -134,6 +138,15 @@ def _plot_examples(examples, plot_widget):
 
     examples_plot.setData(x=x_vals, y=y_vals, brush="blue")
     plot_widget.addItem(examples_plot)
+
+
+def _update_neuron_plot(window_qt_obj, epoch, neuron_positions):
+
+    window_qt_obj.epochLabel.setText(f"Epochs: {epoch}")
+
+    x_vals = neuron_positions[:, 0]
+    y_vals = neuron_positions[:, 1]
+    window_qt_obj.neurons_plot.setData(x=x_vals, y=y_vals)
 
 
 def main():

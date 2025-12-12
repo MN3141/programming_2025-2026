@@ -6,7 +6,7 @@ from neuron import SOMNeuron
 
 
 class MLWorker(qcore.QObject):
-    resultReady = qcore.pyqtSignal(int)
+    resultReady = qcore.pyqtSignal(int, np.ndarray)
     _learning_coeficient = 0.7
     _radius_coeficient = 6.1
 
@@ -133,4 +133,8 @@ class MLWorker(qcore.QObject):
         self._compute_learning_rate()
         self._compute_neuron_radius()
 
-        self.resultReady.emit(self._epoch_count)
+        neuron_positions = np.array(
+            [self._neurons[i][j]._weights for i in range(rows) for j in range(columns)]
+        )
+
+        self.resultReady.emit(self._epoch_count, neuron_positions)
