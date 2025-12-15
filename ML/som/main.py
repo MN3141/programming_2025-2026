@@ -90,6 +90,8 @@ def _init_ui():
 
     btnStep = qwidgets.QPushButton("Step")
     epochLabel = qwidgets.QLabel("Epochs: 0")
+    learningLabel = qwidgets.QLabel("a(t): 0.7")
+    neigbourLabel = qwidgets.QLabel("v(t): 6.7")
     plotWidget = pg.PlotWidget(title="SOM 2D")
 
     plotWidget.showGrid(x=True, y=True, alpha=0.3)
@@ -101,11 +103,15 @@ def _init_ui():
     layout.addWidget(plotWidget)
     layout.addWidget(btnStep)
     layout.addWidget(epochLabel)
+    layout.addWidget(learningLabel)
+    layout.addWidget(neigbourLabel)
     mainWindow.plotWidget = plotWidget
     mainWindow.setLayout(layout)
 
     mainWindow.btnStep = btnStep
     mainWindow.epochLabel = epochLabel
+    mainWindow.learningLabel = learningLabel
+    mainWindow.neigbourLabel = neigbourLabel
 
     app_logger.info("GUI set up!")
     return guiApp, mainWindow
@@ -117,13 +123,17 @@ def _init_worker(window_qt_obj, examples_list):
 
     app_logger.info(f"Function window obj addr: {hex(id(window_qt_obj))}")
     thread_handle = qcore.QThread()
-    worker = MLWorker(configs["epochs_no"], examples_list, configs["domains"])
+    worker = MLWorker(
+        configs["epochs_no"], examples_list, configs["domains"], configs["grid_no"]
+    )
     worker.moveToThread(thread_handle)
 
     thread_handle.start()
     window_qt_obj.btnStep.clicked.connect(worker.stepEpochSlot)
     worker.resultReady.connect(
-        lambda epoch, positions: _update_neuron_plot(window_qt_obj, epoch, positions)
+        lambda epoch, positions, learning_rate, neighbour_radius: _update_neuron_plot(
+            window_qt_obj, epoch, positions, learning_rate, neighbour_radius
+        )
     )
 
     window_qt_obj.thread = thread_handle
@@ -140,10 +150,13 @@ def _plot_examples(examples, plot_widget):
     plot_widget.addItem(examples_plot)
 
 
-def _update_neuron_plot(window_qt_obj, epoch, neuron_positions):
+def _update_neuron_plot(
+    window_qt_obj, epoch, neuron_positions, learning_rate, neighbour
+):
 
     window_qt_obj.epochLabel.setText(f"Epochs: {epoch}")
-
+    window_qt_obj.learningLabel.setText(f"a(t): {learning_rate}")
+    window_qt_obj.neigbourLabel.setText(f"v(t): {neighbour}")
     x_vals = neuron_positions[:, 0]
     y_vals = neuron_positions[:, 1]
     window_qt_obj.neurons_plot.setData(x=x_vals, y=y_vals)

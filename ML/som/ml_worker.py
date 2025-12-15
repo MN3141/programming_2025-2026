@@ -6,7 +6,7 @@ from neuron import SOMNeuron
 
 
 class MLWorker(qcore.QObject):
-    resultReady = qcore.pyqtSignal(int, np.ndarray)
+    resultReady = qcore.pyqtSignal(int, np.ndarray, float, float)
     _learning_coeficient = 0.7
     _radius_coeficient = 6.1
 
@@ -26,7 +26,7 @@ class MLWorker(qcore.QObject):
             for j in range(columns):
                 self._neurons[i][j]._weights = np.random.uniform(inner_min, inner_max)
 
-    def __init__(self, epochs_num, examples, domains):
+    def __init__(self, epochs_num, examples, domains, grid_no):
         super().__init__()
 
         self._epochs_num = epochs_num
@@ -36,10 +36,7 @@ class MLWorker(qcore.QObject):
         self._examples = examples
         self._domains = domains
 
-        self._neurons = [
-            [SOMNeuron() for _ in range(self._epochs_num)]
-            for _ in range(self._epochs_num)
-        ]
+        self._neurons = [[SOMNeuron() for _ in range(grid_no)] for _ in range(grid_no)]
 
         self._init_weights()
 
@@ -137,4 +134,9 @@ class MLWorker(qcore.QObject):
             [self._neurons[i][j]._weights for i in range(rows) for j in range(columns)]
         )
 
-        self.resultReady.emit(self._epoch_count, neuron_positions)
+        self.resultReady.emit(
+            self._epoch_count,
+            neuron_positions,
+            self._learning_rate,
+            self._neuron_radius,
+        )
