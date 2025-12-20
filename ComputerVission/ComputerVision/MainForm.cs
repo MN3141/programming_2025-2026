@@ -1262,5 +1262,107 @@ namespace ComputerVision
             workImage.Unlock();
 
         }
+        private int getMeanIntensity(int x0,int y0, int x1, int y1)
+        {
+            int meanIntensity = 0;
+            int pixelCount = 0;
+            Color pixelColor;
+            //Debug.Print(x1.ToString());
+            //Debug.Print(y1.ToString());
+            for(int column = x0; column <= x1; column++)
+            {
+                for(int row = y0; row <= y1; row++)
+                {
+                    pixelColor = workImage.GetPixel(column, row);
+
+                    int red = pixelColor.R;
+                    int green = pixelColor.G;
+                    int blue = pixelColor.B;
+
+                    int greyIntensity = (red + green + blue) / 3;
+                    pixelCount++;
+                    meanIntensity += greyIntensity;
+                }
+            }
+            if (pixelCount == 0)
+                return 0;
+
+            return meanIntensity/pixelCount;
+        }
+
+        private void splitMergeBtn_Click(object sender, EventArgs e)
+        {
+            if (workImage == null)
+            {
+                MessageBox.Show("No image loaded. Please load an image first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            image = new Bitmap(sSourceFileName);
+            workImage = new FastImage(image);
+
+            FastImage originalImage = new FastImage(new Bitmap(sSourceFileName));
+            Color color;
+            workImage.Lock();
+            originalImage.Lock();
+
+            int threshold = Int32.Parse(splitThresholdBox.Text);
+            Queue<ImageBlock> ProcessList = new Queue<ImageBlock>();
+            List<ImageBlock> Regions = new List<ImageBlock>();
+            ImageBlock originalImageBlock = new ImageBlock(0, 0, workImage.Width - 1, workImage.Height - 1);
+
+            ProcessList.Enqueue(originalImageBlock);
+
+            do
+            {
+                ImageBlock block = ProcessList.Dequeue();
+                int x0 = block.startPoint.x;
+                int y0 = block.startPoint.y;
+
+                int x1 = block.endPoint.x;
+                int y1 = block.endPoint.y;
+
+                int meanIntensity = getMeanIntensity(x0, y0, x1, y1);
+                int numBlockPixels = Math.Abs((x1 - x0) * (y1 - y0));
+                int squareError = 0;
+                bool exit = false;
+                for(int row = x0; row < x1; row++)
+                {
+                    for(int column = y0; column < y1; column++)
+                    {
+                        Color regionPixelColor = workImage.GetPixel(row, column);
+                        int regionPixelAverage = (regionPixelColor.R + regionPixelColor.G + regionPixelColor.B) / 3;
+
+                        squareError = (regionPixelAverage - meanIntensity) * (regionPixelAverage - meanIntensity);
+                    }
+                }
+                //Debug.Print("Amin");
+                float sigma;
+                if (1 - numBlockPixels == 0)
+                    sigma = 0;
+                else
+                    sigma = squareError / (1 - numBlockPixels);
+
+                if(sigma > threshold)
+                {
+                    int halfRow = Math.Abs((x1 - x0) / 2);
+                    int halfColumn = Math.Abs((y1 - y0) / 2);
+
+                    if ((x1 - x0 == 0) && (y1 - y0 == 1))
+                        exit = true;
+                    ProcessList.Enqueue(new ImageBlock(x0, y0, halfRow, halfColumn));
+                    ProcessList.Enqueue(new ImageBlock(halfRow, halfColumn, x1, y1));
+                    ProcessList.Enqueue(new ImageBlock(x0, halfColumn, halfRow, y1));
+                    ProcessList.Enqueue(new ImageBlock(halfRow, y0, halfRow, halfColumn));
+                }
+
+                Debug.Print(ProcessList.Count().ToString());
+            } while (ProcessList.Count() > 0 && !ext);
+            
+            panelDestination.BackgroundImage = null;
+            panelDestination.BackgroundImage = workImage.GetBitMap();
+            originalImage.Unlock();
+            workImage.Unlock();
+        }
     }
 }

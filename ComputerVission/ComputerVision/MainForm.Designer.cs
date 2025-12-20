@@ -49,6 +49,8 @@ namespace ComputerVision
             this.buttonGrayscale = new System.Windows.Forms.Button();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.freiChenBtn = new System.Windows.Forms.Button();
+            this.splitThresholdBox = new System.Windows.Forms.TextBox();
+            this.splitMergeBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rotateBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -268,11 +270,30 @@ namespace ComputerVision
             this.freiChenBtn.UseVisualStyleBackColor = true;
             this.freiChenBtn.Click += new System.EventHandler(this.freiChenBtn_Click);
             // 
+            // splitThresholdBox
+            // 
+            this.splitThresholdBox.Location = new System.Drawing.Point(23, 454);
+            this.splitThresholdBox.Name = "splitThresholdBox";
+            this.splitThresholdBox.Size = new System.Drawing.Size(100, 22);
+            this.splitThresholdBox.TabIndex = 29;
+            // 
+            // splitMergeBtn
+            // 
+            this.splitMergeBtn.Location = new System.Drawing.Point(16, 385);
+            this.splitMergeBtn.Name = "splitMergeBtn";
+            this.splitMergeBtn.Size = new System.Drawing.Size(107, 45);
+            this.splitMergeBtn.TabIndex = 30;
+            this.splitMergeBtn.Text = "Split/Merge";
+            this.splitMergeBtn.UseVisualStyleBackColor = true;
+            this.splitMergeBtn.Click += new System.EventHandler(this.splitMergeBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 582);
+            this.Controls.Add(this.splitThresholdBox);
+            this.Controls.Add(this.splitMergeBtn);
             this.Controls.Add(this.freiChenBtn);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonLoad);
@@ -288,6 +309,7 @@ namespace ComputerVision
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lumenBar)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -314,6 +336,8 @@ namespace ComputerVision
         private System.Windows.Forms.Button Kirsch;
         private System.Windows.Forms.Button laplaceBtn;
         private System.Windows.Forms.Button freiChenBtn;
+        private System.Windows.Forms.TextBox splitThresholdBox;
+        private System.Windows.Forms.Button splitMergeBtn;
     }
 }
 
