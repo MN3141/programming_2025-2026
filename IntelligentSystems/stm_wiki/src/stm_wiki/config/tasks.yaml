@@ -1,0 +1,52 @@
+local_doc_validation:
+  description: >
+    Check the local drive for documentation regarding {mcu} family of MCUs
+    and determine wether it is up to date with the official online version.
+  expected_output: >
+    Throw a warning in case the documentation is out of date with a suggestive
+    message. Else, report `ok` status for the offline documentation state.
+  agent: doc_checker
+
+query_search:
+  description: >
+    Check the online official documentation for the `{keyword}` query and
+    revert to the offline version if no connection could be established
+    or the search is unsuccesful.
+  expected_output: >
+    Return a list consisting the following:
+    - from what documentation version has the info been taken (online or offline)
+    - from what section has it been taken (e.g. STM32F4>Peripheral APIs>USART peripheral API)
+  agent: doc_checker
+
+snippet_generation:
+  description: >
+    Review the context you got and generate a code snippet that explains the functionality
+    or structure for the given `{keyword}` query.
+  expected_output: >
+    A markdown file stored as string that shall list the following:
+    - function/file name
+    - what file dependencies does it have (if any)
+    - inputs and outputs, if `{keyword}` is a function, together with a description of it's effects
+    - file contents if `{keyword}` is a header file (e.g. .h files)
+    - code snippet of how `{keyword}` would be used
+  agent: programmer
+
+code_review:
+  description: >
+    Review the context you got and validated whether or not it contains any
+    potential logic errors.
+  expected_output: >
+    A flag of bolean nature signaling whether the given context is ok or not.
+  agent: code_reviewer
+
+make_report:
+  description: >
+    Review the context you got and generate a markdown report file.
+  expected_output: >
+    A markdown file containing the following:
+    - `{keyword}` as header
+    - needed dependencies (if any)
+    - code snippet
+    - use cases explanation
+    - input and output highlight
+    - UML diagrams detailing uses cases and input-output written in PlantUML
