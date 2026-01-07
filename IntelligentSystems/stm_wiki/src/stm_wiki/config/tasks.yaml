@@ -49,4 +49,7 @@ make_report:
     - code snippet
     - use cases explanation
     - input and output highlight
-    - UML diagrams detailing uses cases and input-output written in PlantUML
+    - UML diagrams as PlantUML code blocks for:
+      - use cases
+      - input/output
+  agent: architect

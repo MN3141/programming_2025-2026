@@ -19,7 +19,7 @@ def run():
     """
     inputs = {
         'mcu': 'stm32f4',
-        'current_year': str(datetime.now().year)
+        'keyword': "USB"
     }
 
     try:
@@ -41,54 +41,3 @@ def train():
 
     except Exception as e:
         raise Exception(f"An error occurred while training the crew: {e}")
-
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        StmWiki().crew().replay(task_id=sys.argv[1])
-
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
-
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "mcu": "stm32f4",
-        "current_year": str(datetime.now().year)
-    }
-
-    try:
-        StmWiki().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")
-
-def run_with_trigger():
-    """
-    Run the crew with trigger payload.
-    """
-    import json
-
-    if len(sys.argv) < 2:
-        raise Exception("No trigger payload provided. Please provide JSON payload as argument.")
-
-    try:
-        trigger_payload = json.loads(sys.argv[1])
-    except json.JSONDecodeError:
-        raise Exception("Invalid JSON payload provided as argument")
-
-    inputs = {
-        "crewai_trigger_payload": trigger_payload,
-        "mcu": "",
-        "current_year": ""
-    }
-
-    try:
-        result = StmWiki().crew().kickoff(inputs=inputs)
-        return result
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew with trigger: {e}")
