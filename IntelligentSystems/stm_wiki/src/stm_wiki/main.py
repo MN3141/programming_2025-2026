@@ -26,18 +26,3 @@ def run():
         StmWiki().crew().kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
-
-
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "mcu": "stm32f4",
-        'current_year': str(datetime.now().year)
-    }
-    try:
-        StmWiki().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")

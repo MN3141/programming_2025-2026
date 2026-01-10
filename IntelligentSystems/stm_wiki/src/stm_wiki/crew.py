@@ -6,13 +6,36 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool
+from crewai.tools import tool
 from typing import List
+
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
+
+@tool("LocalSearchTool")
+def LocalSearchTool(query: str) -> list:
+    """Tool used for searching the local documentation
+    in case the online one has connection issues."""
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    _local_doc_path = os.path.join(script_dir, "..", "..", "knowledge", "stm32f4")
+    html_files = os.listdir(os.path.join(_local_doc_path, "html"))
+    matches = []
+
+    for file in html_files:
+        if ".html" in file and query in file:
+            matches.append(file)
+
+        if matches == []:
+            raise Exception("ERROR:Could not find anything in local documentation.")
+
+        return matches
+
+
 @CrewBase
-class StmWiki():
+class StmWiki:
     """StmWiki crew"""
 
     agents: List[BaseAgent]
@@ -26,7 +49,7 @@ class StmWiki():
     # https://docs.crewai.com/concepts/agents#agent-tools
 
     _script_dir = os.path.dirname(os.path.abspath(__file__))
-    _local_doc_path = os.path.join(_script_dir,"..","..","knowledge", "stm32f4")
+    _local_doc_path = os.path.join(_script_dir, "..", "..", "knowledge", "stm32f4")
 
     def _check_timestamp(self, TaskOutput):
         local_doc_time_stamp = os.stat(self._local_doc_path).st_mtime
@@ -46,36 +69,36 @@ class StmWiki():
             return
 
         if local_doc_time_stamp < online_date:
-            print("Warning: Local documentation seems to be out of date.",
-                "Consider syncing it with the online version.")
+            print(
+                "Warning: Local documentation seems to be out of date.",
+                "Consider syncing it with the online version.",
+            )
 
     @agent
     def doc_checker(self) -> Agent:
         return Agent(
-            config=self.agents_config['doc_checker'], # type: ignore[index]
+            config=self.agents_config["doc_checker"],  # type: ignore[index]
             verbose=True,
-            tools=[SerperDevTool(),ScrapeWebsiteTool()]
+            tools=[SerperDevTool(), ScrapeWebsiteTool(), LocalSearchTool],
         )
 
     @agent
     def programmer(self) -> Agent:
         return Agent(
-            config=self.agents_config['programmer'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["programmer"], verbose=True  # type: ignore[index]
         )
 
     @agent
     def code_reviewer(self) -> Agent:
         return Agent(
-            config=self.agents_config['code_reviewer'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["code_reviewer"],  # type: ignore[index]
+            verbose=True,
         )
 
     @agent
     def architect(self) -> Agent:
         return Agent(
-            config=self.agents_config['architect'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config["architect"], verbose=True  # type: ignore[index]
         )
 
     # To learn more about structured task outputs,
@@ -84,33 +107,35 @@ class StmWiki():
     @task
     def local_doc_validation(self) -> Task:
         return Task(
-            config=self.tasks_config['local_doc_validation'], # type: ignore[index]
-            callback = self._check_timestamp
+            config=self.tasks_config["local_doc_validation"],  # type: ignore[index]
+            callback=self._check_timestamp,
         )
 
     @task
     def query_search(self) -> Task:
         return Task(
-            config=self.tasks_config['query_search'], # type: ignore[index]
+            config=self.tasks_config["query_search"],  # type: ignore[index]
+            input=lambda inputs: {"search_query": inputs.get("keyword", "")},
+            query=lambda inputs: {"search_query": inputs.get("keyword", "")}
         )
 
     @task
     def snippet_generation(self) -> Task:
         return Task(
-            config=self.tasks_config['snippet_generation'], # type: ignore[index]
+            config=self.tasks_config["snippet_generation"],  # type: ignore[index]
         )
 
     @task
     def code_review(self) -> Task:
         return Task(
-            config=self.tasks_config['code_review'], # type: ignore[index]
+            config=self.tasks_config["code_review"],  # type: ignore[index]
         )
 
     @task
     def make_report(self) -> Task:
         return Task(
-            config=self.tasks_config['make_report'], # type: ignore[index]
-            output_file='result.md'
+            config=self.tasks_config["make_report"],  # type: ignore[index]
+            output_file="result.md",
         )
 
     @crew
@@ -120,8 +145,8 @@ class StmWiki():
         # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,  # Automatically created by the @agent decorator
+            tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/

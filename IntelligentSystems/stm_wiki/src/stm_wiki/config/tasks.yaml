@@ -41,15 +41,35 @@ code_review:
 
 make_report:
   description: >
-    Review the context you got and generate a markdown report file.
+    Generate a technical markdown report containing code snippet and UML diagrams.
+    The UML diagrams MUST be written as valid PlantUML code
+    and must render correctly if pasted into https://plantuml.com/plantuml.
   expected_output: >
-    A markdown file containing the following:
-    - `{keyword}` as header
-    - needed dependencies (if any)
-    - code snippet
-    - use cases explanation
-    - input and output highlight
-    - UML diagrams as PlantUML code blocks for:
-      - use cases
-      - input/output
+    A markdown file with the following structure and nothing else:
+
+    # {keyword}
+
+    ## Dependencies
+    A bullet list.
+
+    ## Code Snippet
+    A fenced code block.
+
+    ## Use Cases
+    Explanation in text.
+
+    ## Input and Output
+    Explanation in text.
+
+    ## UML Use Cases
+    A fenced code block labeled `plantuml` containing ONLY valid PlantUML:
+    @startuml
+    ...
+    @enduml
+
+    ## UML Input Output
+    A fenced code block labeled `plantuml` containing ONLY valid PlantUML:
+    @startuml
+    ...
+    @enduml
   agent: architect
