@@ -30,7 +30,7 @@ class MLWorker(qcore.QObject):
         super().__init__()
 
         self._epochs_num = epochs_num
-        self._epoch_count = 0
+        self._iteration_count = 0
         self._learning_rate = self._learning_coeficient
         self._neuron_radius = self._radius_coeficient + 1
         self._examples = examples
@@ -42,12 +42,12 @@ class MLWorker(qcore.QObject):
 
     def _compute_learning_rate(self):
         self._learning_rate = self._learning_coeficient * math.exp(
-            -self._epoch_count / self._epochs_num
+            -self._iteration_count / self._epochs_num
         )
 
     def _compute_neuron_radius(self):
         self._neuron_radius = int(
-            self._radius_coeficient * math.exp(-self._epoch_count / self._epochs_num)
+            self._radius_coeficient * math.exp(-self._iteration_count / self._epochs_num)
             + 1
         )
 
@@ -70,7 +70,7 @@ class MLWorker(qcore.QObject):
         )
 
     def _compute_neuron_positions(
-        self, winner_neuron_row, winner_neuron_column, distance
+        self, winner_neuron_row, winner_neuron_column, example_coord
     ):
 
         self._compute_neuron_radius()
@@ -95,6 +95,7 @@ class MLWorker(qcore.QObject):
 
         for i in range(row_lower_limit, row_upper_limit):
             for j in range(column_lower_limit, column_upper_limit):
+                distance = example_coord - self._neurons[i][j]._weights
                 self._update_neuron_weights(i, j, distance)
 
     def stepEpochSlot(self):
@@ -118,15 +119,11 @@ class MLWorker(qcore.QObject):
                         min_distance = distance
                         winner_neuron_row = row
                         winner_neuron_column = column
-            vector_diff = (
-                self._examples[example].coordinates
-                - self._neurons[winner_neuron_row][winner_neuron_column]._weights
-            )
             self._compute_neuron_positions(
-                winner_neuron_row, winner_neuron_column, vector_diff
+                winner_neuron_row, winner_neuron_column, self._examples[example].coordinates
             )
 
-        self._epoch_count += 1
+        self._iteration_count += 1
         self._compute_learning_rate()
         self._compute_neuron_radius()
 
@@ -135,7 +132,7 @@ class MLWorker(qcore.QObject):
         )
 
         self.resultReady.emit(
-            self._epoch_count,
+            self._iteration_count,
             neuron_positions,
             self._learning_rate,
             self._neuron_radius,
