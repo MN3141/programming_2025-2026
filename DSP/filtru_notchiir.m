@@ -18,19 +18,28 @@ xlabel("f[Hz]");
 ylabel("Mg");
 hold off
 
-freq_taiere = 1150;
-theta = 2*pi*freq_taiere/fs;
+freq_taiere = 4050;
 m2 = 0.95;
+theta = 2*pi*freq_taiere/fs;
 B = [1 -2*cos(theta) 1];
 A = [1, -2*m2*cos(theta), m2*m2];
 
 data2 = filter(B,A,data);
-freq2 = fftshift(abs(fft(data2)));
+
+freq_taiere2 = 1150.02;
+theta2 = 2*pi*freq_taiere2/fs;
+
+B = [1 -2*cos(theta2) 1];
+A = [1, -2*m2*cos(theta2), m2*m2];
+
+data3 = filter(B,A,data2);
+freq3 = fftshift(abs(fft(data3)));
+%sound(data3,fs);
 figure(2)
-plot(freq,freq2,"red");
-title("Scorpions Spectru 2 magnitudine");
+plot(freq,freq3,"red");
+title("Scorpions Spectru Fitrat");
 xlabel("f[Hz]");
 ylabel("Mg");
 hold off
 
-%freqz(B,A,"whole",fs);
+freqz(B,A,"whole",fs);

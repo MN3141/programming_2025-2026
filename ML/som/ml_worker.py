@@ -37,6 +37,7 @@ class MLWorker(qcore.QObject):
         self._domains = domains
 
         self._neurons = [[SOMNeuron() for _ in range(grid_no)] for _ in range(grid_no)]
+        #print(len(self._neurons[10]))
 
         self._init_weights()
 
@@ -76,27 +77,40 @@ class MLWorker(qcore.QObject):
         self._compute_neuron_radius()
         rows = len(self._neurons)
         columns = len(self._neurons[0])
-
+        # print("===========")
+        # print(f"Rows:{rows}")
+        # print(f"Columns: {columns}")
+        # print(f"Winner row: {winner_neuron_row}")
+        # print(f"Winner columns: {winner_neuron_column}")
         row_lower_limit = winner_neuron_row - self._neuron_radius
         if row_lower_limit < 0:
             row_lower_limit = 0
 
         row_upper_limit = winner_neuron_row + self._neuron_radius
-        if row_upper_limit > rows:
-            row_upper_limit = rows
+        #print(f"Initial upper limit: {row_upper_limit}")
+        if row_upper_limit >= rows:
+            row_upper_limit = rows-1
 
         column_lower_limit = winner_neuron_column - self._neuron_radius
+        #print(f"Initial lower limit: {column_lower_limit}")
         if column_lower_limit < 0:
             column_lower_limit = 0
 
         column_upper_limit = winner_neuron_column + self._neuron_radius
-        if column_upper_limit > columns:
-            column_upper_limit = columns
+        if column_upper_limit >= columns:
+            column_upper_limit = columns-1
 
-        for i in range(row_lower_limit, row_upper_limit):
-            for j in range(column_lower_limit, column_upper_limit):
+        #print(row_upper_limit)
+        print(f"Neighbour i j:{winner_neuron_row} {winner_neuron_column} {self._neuron_radius}")
+        for i in range(row_lower_limit, row_upper_limit+1):
+            for j in range(column_lower_limit, column_upper_limit+1):
+                print(f"Neighbour i j:{i} {j}")
+                
                 distance = example_coord - self._neurons[i][j]._weights
                 self._update_neuron_weights(i, j, distance)
+
+        x = 10
+        print(f"_______________________")
 
     def stepEpochSlot(self):
 

@@ -18,7 +18,7 @@ def run():
     Run the crew.
     """
     inputs = {
-        'mcu': 'stm32f4',
+        'mcu': 'stme32f4',
         'keyword': "USB"
     }
 
