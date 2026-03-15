@@ -1,29 +1,43 @@
-SRC_DIR = src/
-INC_DIR = inc/
+include defs.mak
 
-CC_SRCS = $(wildcard $(SRC_DIR)/*.c)
-CC_INC = -I$(INC_DIR)
-CC_FLAGS =
-CC  = gcc
+all: $(app)| setup
 
-# YOU NEED TO CONFIGURE UNITY_ROOT
-UNITY_ROOT = ../../../Unity
-TST_DIR = tests
-TST_SRCS = $(UNITY_ROOT)/src/unity.c $(TST_DIR)/test1.c
-TST_INC = $(CC_INC) -I$(UNITY_ROOT)/src
+setup:
+	@mkdir -p $(build_dir) $(obj_dir)
 
-proj = proj
-out_dir = build
+info: $(intermediaries) $(asms) $(objs) $(app)| setup
+	@gcc $(objs) -o $(build_dir)/$(proj).elf -Wl,-Map=$(build_dir)/$(proj).map
+	@readelf -S $(app) > $(build_dir)/$(proj)_sections.txt
+	@objdump -d $(app) > $(build_dir)/$(proj)_assembled.s
 
-all:
-	@mkdir -p $(out_dir)
-#	@$(CC) $(CC_SRCS) $(CC_INC) $(CC_FLAGS) -S -o $(out_dir)/$(proj).s
-#	@$(CC) $(CC_SRCS) $(CC_INC) $(CC_FLAGS) -S
-	@$(CC) $(CC_SRCS) $(CC_INC) $(CC_FLAGS) -o $(out_dir)/$(proj).elf
+$(i_dir)%.i: $(src_dir)%.c
+	@mkdir -p $(i_dir)
+	@gcc $< $(cc_inc) -E -P -o $@
 
-test:
-	@mkdir -p $(out_dir)
-	@$(CC) $(TST_SRCS) $(SRC_DIR)/csv_parser.c $(TST_INC) $(CC_FLAGS) -o $(out_dir)/$(proj)_tst0.elf
+$(as_dir)%.s: $(src_dir)%.c
+	@mkdir -p $(as_dir)
+	@gcc $< $(cc_inc) -S -o $@
+
+$(obj_dir)%.o: $(src_dir)%.c
+	@mkdir -p $(obj_dir)
+	@gcc $< $(cc_inc) -c -o $@
+
+$(build_dir)/$(proj).elf: $(objs)
+	@gcc $^ -o $(build_dir)/$(proj).elf
+
+test:$(tst_srcs)
+	@gcc $^ $(tst_inc) -o $(build_dir)/tst_$(proj).elf
+
+help:
+	@echo "Basic makefile script"
+	@echo "Available build options:"
+	@echo "all (or empty): builds the app"
+	@echo "clean: cleans the built directory"
+	@echo "info: builds the app with additional debugging info"
+	@echo "test: builds unit tests"
+	@echo "help: shows these messages"
 
 clean:
-	@rm -rf $(out_dir)
+	@rm -rf $(build_dir)
+
+.PHONY: clean

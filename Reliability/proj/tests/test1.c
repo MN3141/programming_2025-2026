@@ -22,9 +22,9 @@ void test_file_read(void){
     char expectedLine2[] = "Sub-Saharan Africa,,1801,0,0";
 
     char **readLines = FileParser(filePath);
-    char actualLine0 = readLines[0];
+    char *actualLine0 = readLines[0];
 
-    TEST_ASSERT_EQUAL_STRING(expectedLine0,actualLine0);
+    TEST_ASSERT_EQUAL_STRING(expectedLine0,*actualLine0);
 }
 
 // not needed when using generate_test_runner.rb
