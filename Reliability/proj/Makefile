@@ -25,8 +25,8 @@ $(obj_dir)%.o: $(src_dir)%.c
 $(build_dir)/$(proj).elf: $(objs)
 	@gcc $^ -o $(build_dir)/$(proj).elf
 
-test:$(tst_srcs)
-	@gcc $^ $(tst_inc) -o $(build_dir)/tst_$(proj).elf
+test:$(tst_srcs) | setup
+	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c -g -o $(build_dir)/tst_$(proj).elf
 
 help:
 	@echo "Basic makefile script"
