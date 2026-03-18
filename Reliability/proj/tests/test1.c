@@ -18,6 +18,7 @@ void test_die(void){
 
 void test_file_read(void){
 
+    /* Test if the file if the last CSV line is parsed*/
     char csvFile[] = "/tests/test.csv";
     char cwd[100];
     int pathSize = 0;
@@ -29,14 +30,26 @@ void test_file_read(void){
     strcpy(filePath,cwd);
     strcat(filePath,csvFile);
 
-    char expectedLine0[] = "North Africa and the Middle East,,2011,1,0";
-    char expectedLine1[] = "Sub-Saharan Africa,,1800,0,0";
     char expectedLine2[] = "Sub-Saharan Africa,,1801,0,0";
 
     char **readLines = FileParser(filePath);
-    char *actualLine0 = readLines[0];
+    char *actualLine2 = readLines[2];
 
-    TEST_ASSERT_EQUAL_STRING(expectedLine0,actualLine0);
+    TEST_ASSERT_EQUAL_STRING(expectedLine2,actualLine2);
+
+    /* Test what happens if the path is a folder*/
+
+    char dirPath[] = "/home";
+    char **parserOutput = FileParser(dirPath);
+
+    TEST_ASSERT_EQUAL_STRING(FILE_IS_FOLDER_ERROR,parserOutput[0]);
+
+    /* Test what happens if the given path does not exist*/
+
+    char wrongPath[] = "ULBS";
+    char **parserOutput2 = FileParser(wrongPath);
+
+    TEST_ASSERT_EQUAL_STRING(FILE_OPEN_ERROR,parserOutput2[0]);
 }
 
 // not needed when using generate_test_runner.rb

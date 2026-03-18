@@ -1,3 +1,5 @@
 IntelligentSystems/conway/out/*
 __pycache__
 *.log
+*.elf
+*.vscode

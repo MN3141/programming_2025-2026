@@ -1,32 +1,54 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/stat.h>
 #include "csv_parser.h"
 
 char **FileParser(char filePath[])
 {
 
+    /* NOTE: this approach for folder
+            checking may not be compatible
+            on Windows.*/
+
+    struct stat buffer;
+    int status = stat(filePath, &buffer);
+
+    if (status == -1)
+    {
+        char **errorMsg = malloc(sizeof(char *));
+        errorMsg[0] = malloc(strlen(FILE_OPEN_ERROR) + 1);
+        strcpy(errorMsg[0], FILE_OPEN_ERROR);
+
+        return errorMsg;
+    }
+
+    if (S_ISDIR(buffer.st_mode))
+    {
+        char **errorMsg = malloc(sizeof(char *));
+        errorMsg[0] = malloc(strlen(FILE_IS_FOLDER_ERROR) + 1);
+        strcpy(errorMsg[0], FILE_IS_FOLDER_ERROR);
+
+        return errorMsg;
+    }
+
     FILE *fileHandle = fopen(filePath, "r");
     char **fileLines = malloc(MAX_FILE_SIZE * sizeof(char *));
 
-    if (!fileHandle)
-        perror(FILE_OPEN_ERROR);
-    else
+    char readBuffer[MAX_LINE_LENGTH];
+    int lineCounter = 0;
+    while (fgets(readBuffer, MAX_LINE_LENGTH, fileHandle) != NULL)
     {
-        char readBuffer[MAX_LINE_LENGTH];
-        int lineCounter = 0;
-        while (fgets(readBuffer, MAX_LINE_LENGTH, fileHandle) != NULL)
-        {
-            int len = strlen(readBuffer);
-            if (readBuffer[len - 1] == '\n')
-                readBuffer[len - 1] = '\0';
+        int len = strlen(readBuffer);
+        if (readBuffer[len - 1] == '\n')
+            readBuffer[len - 1] = '\0';
 
-            fileLines[lineCounter] = malloc(MAX_LINE_LENGTH * sizeof(char));
-            strcpy(fileLines[lineCounter], readBuffer);
+        fileLines[lineCounter] = malloc(MAX_LINE_LENGTH * sizeof(char));
+        strcpy(fileLines[lineCounter], readBuffer);
 
-            lineCounter++;
-        }
-        fclose(fileHandle);
+        lineCounter++;
     }
+    fclose(fileHandle);
+
     return fileLines;
 }
