@@ -52,3 +52,39 @@ char **FileParser(char filePath[])
 
     return fileLines;
 }
+
+char **LineSplitter(char fileLine[], int fieldsNum)
+{
+
+    char *copyStr = malloc((strlen(fileLine) + 1) * sizeof(char));
+    strcpy(copyStr, fileLine);
+    char delim[] = ",";
+    char *token = strtok(copyStr, delim);
+
+    if (token == NULL)
+    {
+        char **errorMsg = malloc(sizeof(char *));
+        errorMsg[0] = malloc(strlen(TOKEN_SPLIT_ERROR) + 1);
+        strcpy(errorMsg[0], TOKEN_SPLIT_ERROR);
+
+        return errorMsg;
+    }
+
+    char **splitLines = malloc(fieldsNum * sizeof(char*));
+    splitLines[0] = malloc((strlen(token) + 1) * sizeof(char));
+    strcpy(splitLines[0],token);
+    int counter = 1;
+
+    while (token != NULL && counter < fieldsNum)
+    {
+        token = strtok(NULL, delim);
+        if (token == NULL) break;
+        splitLines[counter] = malloc((strlen(token) + 1) * sizeof(char));
+        strcpy(splitLines[counter],token);
+
+        counter++;
+    }
+
+    free(copyStr);
+    return splitLines;
+}
