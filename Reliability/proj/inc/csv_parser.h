@@ -7,6 +7,6 @@
 #define MAX_LINE_LENGTH 100
 #define MAX_FILE_SIZE 1300
 
-char **FileParser(char filePath[]);
+void FileParser(char filePath[],char parserBuffer[][MAX_LINE_LENGTH]);
 char **LineSplitter(char fileLine[], int fieldsNum);
 #endif

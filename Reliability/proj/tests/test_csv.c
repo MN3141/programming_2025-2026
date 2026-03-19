@@ -5,6 +5,8 @@
 #include "csv_parser.h"
 #include "unity.h"
 
+char csvBuffer[MAX_FILE_SIZE][MAX_LINE_LENGTH];
+char actualLine[MAX_LINE_LENGTH];
 void setUp(void)
 {
 }
@@ -32,30 +34,32 @@ void test_CSV_FileParser_LastLine(void)
     strcpy(filePath, cwd);
     strcat(filePath, csvFile);
 
-    char expectedLine2[] = "Sub-Saharan Africa,,1801,0,0";
+    char expectedLine[] = "Sub-Saharan Africa,,1801,0,0";
 
-    char **readLines = FileParser(filePath);
-    char *actualLine2 = readLines[2];
+    FileParser(filePath, csvBuffer);
+    strcpy(actualLine, csvBuffer[2]);
 
-    TEST_ASSERT_EQUAL_STRING(expectedLine2, actualLine2);
+    TEST_ASSERT_EQUAL_STRING(expectedLine, actualLine);
 }
 
 /* Test for path that is a directory*/
 void test_CSV_FileParser_Input_Is_Folder(void)
 {
     char dirPath[] = "/home";
-    char **parserOutput = FileParser(dirPath);
+    FileParser(dirPath, csvBuffer);
+    strcpy(actualLine, csvBuffer[0]);
 
-    TEST_ASSERT_EQUAL_STRING(FILE_IS_FOLDER_ERROR, parserOutput[0]);
+    TEST_ASSERT_EQUAL_STRING(FILE_IS_FOLDER_ERROR, actualLine);
 }
 
 /* Test for path that is an invalid file*/
 void test_CSV_FileParser_Input_Path_Invalid(void)
 {
     char wrongPath[] = "ULBS";
-    char **parserOutput2 = FileParser(wrongPath);
+    FileParser(wrongPath,csvBuffer);
+    strcpy(actualLine, csvBuffer[0]);
 
-    TEST_ASSERT_EQUAL_STRING(FILE_OPEN_ERROR, parserOutput2[0]);
+    TEST_ASSERT_EQUAL_STRING(FILE_OPEN_ERROR, actualLine);
 }
 
 /* Test basic tokenizing scenario*/
