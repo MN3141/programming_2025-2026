@@ -1,5 +1,12 @@
 include defs.mak
 
+dbg :=
+DBG_FLAG :=
+
+ifneq ($(dbg),)
+DBG_FLAG := -g
+endif
+
 all: $(app)| setup
 
 setup:
@@ -20,13 +27,13 @@ $(as_dir)%.s: $(src_dir)%.c
 
 $(obj_dir)%.o: $(src_dir)%.c
 	@mkdir -p $(obj_dir)
-	@gcc $< $(cc_inc) -c -o $@
+	@gcc $(DBG_FLAG) $< $(cc_inc) -c -o $@
 
 $(build_dir)/$(proj).elf: $(objs)
 	@gcc $^ -o $(build_dir)/$(proj).elf
 
 test:$(tst_srcs) | setup
-	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c -g -o $(build_dir)/tst_$(proj).elf
+	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -o $(build_dir)/tst_$(proj).elf
 
 help:
 	@echo "Basic makefile script"
