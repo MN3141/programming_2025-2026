@@ -40,43 +40,76 @@ void FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
         lineCounter++;
     }
     fclose(fileHandle);
-
-    return;
 }
 
-char **LineSplitter(char fileLine[], int fieldsNum)
+void LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
+{
+    char *start = fileLine;
+    int i = 0;
+    while (i < MAX_TOKENS)
+    {
+        while (*start == ',')
+            start++;
+        if (*start == '\0')
+            break;
+        char *end = start;
+        while (*end && *end != ',')
+            end++;
+        if (*end == ',')
+        {
+            *end = '\0';
+            strcpy(tokenBuffer[i], start);
+            start = end + 1;
+        }
+        else
+        {
+            strcpy(tokenBuffer[i], start);
+            start = end;
+        }
+        i++;
+    }
+    for (; i < MAX_TOKENS; i++)
+    {
+        strcpy(tokenBuffer[i], "");
+    }
+}
+
+CSVLine *CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE])
 {
 
-    char *copyStr = malloc((strlen(fileLine) + 1) * sizeof(char));
-    strcpy(copyStr, fileLine);
-    char delim[] = ",";
-    char *token = strtok(copyStr, delim);
+    CSVLine *csvLineObj = malloc(sizeof(CSVLine));
 
-    if (token == NULL)
+    if (csvLineObj != NULL)
     {
-        char **errorMsg = malloc(sizeof(char *));
-        errorMsg[0] = malloc(strlen(TOKEN_SPLIT_ERROR) + 1);
-        strcpy(errorMsg[0], TOKEN_SPLIT_ERROR);
+        strcpy(constructorStatus, CSV_OBJ_CREATED_OK);
 
-        return errorMsg;
+        csvLineObj->Entity = malloc(strlen(entity) + 1);
+
+        if (csvLineObj->Entity != NULL)
+            strcpy(csvLineObj->Entity, entity);
+        else
+            strcpy(constructorStatus, CSV_ENTITY_ERROR);
+
+        csvLineObj->Code = code;
+        csvLineObj->CivilWars = civilWars;
+        csvLineObj->InterstateWars = interStateWars;
     }
 
-    char **splitLines = malloc(fieldsNum * sizeof(char *));
-    splitLines[0] = malloc((strlen(token) + 1) * sizeof(char));
-    strcpy(splitLines[0], token);
-    int counter = 1;
+    else
+        strcpy(constructorStatus, CSV_OBJ_CREATED_ERROR);
 
-    while (token != NULL && counter < fieldsNum)
+    return csvLineObj;
+}
+
+void CSVLine_Destroy(CSVLine *csvLineObj)
+{
+
+    if (csvLineObj != NULL)
     {
-        token = strtok(NULL, delim);
-        if (token == NULL)
-            break;
-        splitLines[counter] = malloc((strlen(token) + 1) * sizeof(char));
-        strcpy(splitLines[counter], token);
-
-        counter++;
+        free(csvLineObj->Entity);
+        csvLineObj->Entity = NULL;
     }
 
-    free(copyStr);
-    return splitLines;
+    free(csvLineObj);
+    csvLineObj = NULL;
 }

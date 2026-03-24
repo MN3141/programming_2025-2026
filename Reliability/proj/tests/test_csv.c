@@ -2,11 +2,20 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "csv_parser.h"
 #include "unity.h"
 
 char csvBuffer[MAX_FILE_SIZE][MAX_LINE_LENGTH];
 char actualLine[MAX_LINE_LENGTH];
+char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH];
+char constructorStatus[CSV_CREATE_BUFF_SIZE];
+char entityStr[] = "Rhomaioi";
+
+int code = 10;
+int civilWars = 100;
+int interStateWars = 99;
+
 void setUp(void)
 {
 }
@@ -56,7 +65,7 @@ void test_CSV_FileParser_Input_Is_Folder(void)
 void test_CSV_FileParser_Input_Path_Invalid(void)
 {
     char wrongPath[] = "ULBS";
-    FileParser(wrongPath,csvBuffer);
+    FileParser(wrongPath, csvBuffer);
     strcpy(actualLine, csvBuffer[0]);
 
     TEST_ASSERT_EQUAL_STRING(FILE_OPEN_ERROR, actualLine);
@@ -66,30 +75,59 @@ void test_CSV_FileParser_Input_Path_Invalid(void)
 void test_CSV_LineSplitter_Tokenizer(void)
 {
 
-    char csvLine[] = "Americas,,1800,0,0";
-    int num = 5;
+    char parsedLine[] = "Americas,,1800,0,0";
+    char *expectedTokens[] = {
+        "Americas", "1800", "0", "0", ""};
 
-    char **expectedLines = malloc(num * sizeof(char *));
+    LineSplitter(parsedLine, tokenBuffer);
 
-    expectedLines[0] = malloc(strlen("Americas") + 1);
-    strcpy(expectedLines[0], "Americas");
-
-    expectedLines[1] = malloc(strlen("") + 1);
-    strcpy(expectedLines[1], "");
-
-    expectedLines[2] = malloc(strlen("") + 1);
-    strcpy(expectedLines[2], "");
-
-    expectedLines[3] = malloc(strlen("1800") + 1);
-    strcpy(expectedLines[3], "1800");
-
-    expectedLines[4] = malloc(strlen("0") + 1);
-    strcpy(expectedLines[4], "0");
-
-    char **splitLines = LineSplitter(csvLine, num);
-    TEST_ASSERT_EQUAL_STRING_ARRAY(expectedLines, splitLines, num);
+    for (int i = 0; i < 5; i++)
+        TEST_ASSERT_EQUAL_STRING(expectedTokens[i], tokenBuffer[i]);
 }
 
+/* Test tokenizing for empty values*/
+void test_CSV_LineSplitter_EmptyValues(void)
+{
+    char parsedLine[] = ",,,,";
+    char *expectedTokens[] = {
+        "", "", "", "", ""};
+
+    LineSplitter(parsedLine, tokenBuffer);
+
+    for (int i = 0; i < 5; i++)
+        TEST_ASSERT_EQUAL_STRING(expectedTokens[i], tokenBuffer[i]);
+}
+
+/* Test constructor for a basic scenario*/
+void test_CSVLine_Create_Normal(void)
+{
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    char expectedStatus[] = CSV_OBJ_CREATED_OK;
+
+    TEST_ASSERT_EQUAL_STRING(expectedStatus, constructorStatus);
+}
+
+/* Test if the constructor copies the address or the content of entity string*/
+void test_CSVLine_Create_Entity_Copy(void)
+{
+    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    char *entityAddr = entityStr;
+    char *constructorAddr = myObj->Entity;
+
+    TEST_ASSERT_NOT_EQUAL((uintptr_t)entityStr, (uintptr_t)myObj->Entity);
+}
+
+/* Test if the memory allocated for entity if freed*/
+void test_CSVLine_Destroy_Entity(void)
+{
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    CSVLine_Destroy(myObj);
+    char *entityAddr = myObj->Entity;
+
+    TEST_ASSERT_EQUAL_PTR(entityAddr, NULL);
+}
 int main(void)
 {
     UNITY_BEGIN();
@@ -97,5 +135,10 @@ int main(void)
     RUN_TEST(test_CSV_FileParser_Input_Is_Folder);
     RUN_TEST(test_CSV_FileParser_Input_Path_Invalid);
     RUN_TEST(test_CSV_LineSplitter_Tokenizer);
+    RUN_TEST(test_CSV_LineSplitter_EmptyValues);
+    RUN_TEST(test_CSVLine_Create_Normal);
+    RUN_TEST(test_CSVLine_Create_Entity_Copy);
+    RUN_TEST(test_CSVLine_Destroy_Entity);
+
     return UNITY_END();
 }
