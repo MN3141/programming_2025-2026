@@ -9,12 +9,14 @@
 char csvBuffer[MAX_FILE_SIZE][MAX_LINE_LENGTH];
 char actualLine[MAX_LINE_LENGTH];
 char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH];
-char constructorStatus[CSV_CREATE_BUFF_SIZE];
 char entityStr[] = "Rhomaioi";
 
 int code = 10;
 int civilWars = 100;
 int interStateWars = 99;
+
+int status_code;
+CSVLine myObj;
 
 void setUp(void)
 {
@@ -55,23 +57,21 @@ void test_CSV_FileParser_LastLine(void)
 void test_CSV_FileParser_Input_Is_Folder(void)
 {
     char dirPath[] = "/home";
-    FileParser(dirPath, csvBuffer);
-    strcpy(actualLine, csvBuffer[0]);
+    status_code = FileParser(dirPath, csvBuffer);
 
-    TEST_ASSERT_EQUAL_STRING(FILE_IS_FOLDER_ERROR, actualLine);
+    TEST_ASSERT_EQUAL_INT(FILE_IS_DIR_ERR_CODE, status_code);
 }
 
 /* Test for path that is an invalid file*/
 void test_CSV_FileParser_Input_Path_Invalid(void)
 {
     char wrongPath[] = "ULBS";
-    FileParser(wrongPath, csvBuffer);
-    strcpy(actualLine, csvBuffer[0]);
+    status_code = FileParser(wrongPath, csvBuffer);
 
-    TEST_ASSERT_EQUAL_STRING(FILE_OPEN_ERROR, actualLine);
+    TEST_ASSERT_EQUAL_INT(FILE_OPEN_ERR_CODE, status_code);
 }
 
-/* Test basic tokenizing scenario*/
+// /* Test basic tokenizing scenario*/
 void test_CSV_LineSplitter_Tokenizer(void)
 {
 
@@ -85,7 +85,7 @@ void test_CSV_LineSplitter_Tokenizer(void)
         TEST_ASSERT_EQUAL_STRING(expectedTokens[i], tokenBuffer[i]);
 }
 
-/* Test tokenizing for empty values*/
+// /* Test tokenizing for empty values*/
 void test_CSV_LineSplitter_EmptyValues(void)
 {
     char parsedLine[] = ",,,,";
@@ -98,35 +98,30 @@ void test_CSV_LineSplitter_EmptyValues(void)
         TEST_ASSERT_EQUAL_STRING(expectedTokens[i], tokenBuffer[i]);
 }
 
-/* Test constructor for a basic scenario*/
+// /* Test constructor for a basic scenario*/
 void test_CSVLine_Create_Normal(void)
 {
+    status_code = CSVLine_Create(entityStr, code, civilWars, interStateWars, &myObj);
 
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
-    char expectedStatus[] = CSV_OBJ_CREATED_OK;
-
-    TEST_ASSERT_EQUAL_STRING(expectedStatus, constructorStatus);
+    TEST_ASSERT_EQUAL_INT(CSV_OBJ_CREATED_OK, status_code);
 }
 
-/* Test if the constructor copies the address or the content of entity string*/
+// /* Test if the constructor copies the address or the content of entity string*/
 void test_CSVLine_Create_Entity_Copy(void)
 {
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    CSVLine_Create(entityStr, code, civilWars, interStateWars, &myObj);
     char *entityAddr = entityStr;
-    char *constructorAddr = myObj->Entity;
 
-    TEST_ASSERT_NOT_EQUAL((uintptr_t)entityStr, (uintptr_t)myObj->Entity);
+    TEST_ASSERT_NOT_EQUAL((uintptr_t)entityStr, (uintptr_t)myObj.Entity);
 }
 
-/* Test if the memory allocated for entity if freed*/
+// /* Test if the memory allocated for entity is freed*/
 void test_CSVLine_Destroy_Entity(void)
 {
+    CSVLine_Destroy(&myObj);
+    char *entityAddr = myObj.Entity;
 
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
-    CSVLine_Destroy(myObj);
-    char *entityAddr = myObj->Entity;
-
-    TEST_ASSERT_EQUAL_PTR(entityAddr, NULL);
+    TEST_ASSERT_EQUAL_HEX32((uintptr_t)myObj.Entity, (uintptr_t)NULL);
 }
 int main(void)
 {

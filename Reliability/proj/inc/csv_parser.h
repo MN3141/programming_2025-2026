@@ -1,12 +1,15 @@
 #ifndef CSVPARSER
 #define CSVPARSER
 
-#define FILE_OPEN_ERROR "Cannot open file!"
-#define FILE_IS_FOLDER_ERROR "Given path is folder!"
-#define TOKEN_SPLIT_ERROR "Could not split line!"
-#define CSV_OBJ_CREATED_OK "OK"
-#define CSV_OBJ_CREATED_ERROR "Could allocate memory for object!"
-#define CSV_ENTITY_ERROR "Could not assign entity!"
+#define OK_CODE 0
+#define FILE_OPEN_ERR_CODE -1 /* Cannot open given file*/
+#define FILE_IS_DIR_ERR_CODE -2 /* Given file is actually a path (applicable to Linux systems)*/
+
+#define LINE_SPLITTER_OK OK_CODE
+
+#define CSV_OBJ_CREATED_OK OK_CODE
+#define CSV_OBJ_CREATED_ERROR -3 /*Could not instantiate object*/
+#define CSV_ENTITY_WARNING 1
 
 #define MAX_LINE_LENGTH 100
 #define MAX_FILE_SIZE 1300
@@ -22,9 +25,9 @@ typedef struct
     int InterstateWars;
 } CSVLine;
 
-void FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
-void LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
+int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
+int LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
+int CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, CSVLine *csvLineObj);
 void CSVLine_Destroy(CSVLine *csvLineObj);
-CSVLine *CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
 
 #endif

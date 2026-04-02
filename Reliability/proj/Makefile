@@ -32,8 +32,11 @@ $(obj_dir)%.o: $(src_dir)%.c
 $(build_dir)/$(proj).elf: $(objs)
 	@gcc $^ -o $(build_dir)/$(proj).elf
 
-test:$(tst_srcs) | setup
-	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -o $(build_dir)/tst_$(proj).elf
+test-unit:$(unit_tst_srcs) | setup
+	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -g -o $(build_dir)/unit_tst_$(proj).elf
+
+test-int:$(integration_tst_srcs_tst_srcs) | setup
+	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -o $(build_dir)/integration_tst_$(proj).elf
 
 help:
 	@echo "Basic makefile script"

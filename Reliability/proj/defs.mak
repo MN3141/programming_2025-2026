@@ -17,5 +17,6 @@ objs = $(patsubst $(src_dir)%.c,$(obj_dir)%.o,$(srcs))
 # YOU NEED TO CONFIGURE test_framework_root
 test_framework_root = ../../../Unity
 tst_dir = tests
-tst_srcs = $(test_framework_root)/src/unity.c $(tst_dir)/test_csv.c
+unit_tst_srcs = $(test_framework_root)/src/unity.c $(tst_dir)/test_csv.c
+integration_tst_srcs = $(test_framework_root)/src/unity.c $(tst_dir)/test_integration.c
 tst_inc = $(cc_inc) -I$(test_framework_root)/src

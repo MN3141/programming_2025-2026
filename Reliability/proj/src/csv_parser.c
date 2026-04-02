@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 #include "csv_parser.h"
 
-void FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
+int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
 {
 
     /* NOTE: this approach for folder
@@ -15,15 +15,11 @@ void FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
     int status = stat(filePath, &buffer);
 
     if (status == -1)
-    {
-        strcpy(parserBuffer[0], FILE_OPEN_ERROR);
-        return;
-    }
+        return FILE_OPEN_ERR_CODE;
 
     if (S_ISDIR(buffer.st_mode))
     {
-        strcpy(parserBuffer[0], FILE_IS_FOLDER_ERROR);
-        return;
+        return FILE_IS_DIR_ERR_CODE;
     }
 
     FILE *fileHandle = fopen(filePath, "r");
@@ -40,9 +36,11 @@ void FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
         lineCounter++;
     }
     fclose(fileHandle);
+
+    return OK_CODE;
 }
 
-void LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
+int LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
 {
     char *start = fileLine;
     int i = 0;
@@ -72,33 +70,36 @@ void LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH]
     {
         strcpy(tokenBuffer[i], "");
     }
+
+    return LINE_SPLITTER_OK;
 }
 
-CSVLine *CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE])
+int CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, CSVLine *csvLineObj)
 {
 
-    CSVLine *csvLineObj = malloc(sizeof(CSVLine));
+    csvLineObj = malloc(sizeof(CSVLine));
 
     if (csvLineObj != NULL)
     {
-        strcpy(constructorStatus, CSV_OBJ_CREATED_OK);
 
         csvLineObj->Entity = malloc(strlen(entity) + 1);
 
         if (csvLineObj->Entity != NULL)
+        {
             strcpy(csvLineObj->Entity, entity);
-        else
-            strcpy(constructorStatus, CSV_ENTITY_ERROR);
 
-        csvLineObj->Code = code;
-        csvLineObj->CivilWars = civilWars;
-        csvLineObj->InterstateWars = interStateWars;
+            csvLineObj->Code = code;
+            csvLineObj->CivilWars = civilWars;
+            csvLineObj->InterstateWars = interStateWars;
+            return CSV_OBJ_CREATED_OK;
+        }
+
+        else
+            return CSV_ENTITY_WARNING;
     }
 
     else
-        strcpy(constructorStatus, CSV_OBJ_CREATED_ERROR);
-
-    return csvLineObj;
+        return CSV_OBJ_CREATED_ERROR;
 }
 
 void CSVLine_Destroy(CSVLine *csvLineObj)
@@ -111,5 +112,4 @@ void CSVLine_Destroy(CSVLine *csvLineObj)
     }
 
     free(csvLineObj);
-    csvLineObj = NULL;
 }
