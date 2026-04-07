@@ -77,7 +77,7 @@ void test_CSV_LineSplitter_Tokenizer(void)
 
     char parsedLine[] = "Americas,,1800,0,0";
     char *expectedTokens[] = {
-        "Americas", "1800", "0", "0", ""};
+        "Americas", "", "1800", "0", "0"};
 
     LineSplitter(parsedLine, tokenBuffer);
 

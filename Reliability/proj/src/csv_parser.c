@@ -46,13 +46,11 @@ int LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
     int i = 0;
     while (i < MAX_TOKENS)
     {
-        while (*start == ',')
-            start++;
-        if (*start == '\0')
-            break;
         char *end = start;
+
         while (*end && *end != ',')
             end++;
+
         if (*end == ',')
         {
             *end = '\0';
@@ -64,7 +62,11 @@ int LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
             strcpy(tokenBuffer[i], start);
             start = end;
         }
+
         i++;
+
+        if (*start == '\0')
+            break;
     }
     for (; i < MAX_TOKENS; i++)
     {
