@@ -76,7 +76,7 @@ int LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
     return LINE_SPLITTER_OK;
 }
 
-CSVLine *CSVLine_Create(char entity[], char code[], unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE])
+CSVLine *CSVLine_Create(char entity[], char code[], unsigned int year, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE])
 {
 
     CSVLine *csvLineObj = malloc(sizeof(CSVLine));
@@ -97,6 +97,8 @@ CSVLine *CSVLine_Create(char entity[], char code[], unsigned int civilWars, unsi
             strcpy(csvLineObj->Code,code);
         else
             strcpy(constructorStatus,CSV_CODE_ERROR);
+
+        csvLineObj->Year = year;
         csvLineObj->CivilWars = civilWars;
         csvLineObj->InterstateWars = interStateWars;
     }

@@ -28,7 +28,7 @@ typedef struct
 
 int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
 int LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
-CSVLine *CSVLine_Create(char entity[], char code[], unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
+CSVLine *CSVLine_Create(char entity[], char code[], unsigned int year, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
 void CSVLine_Destroy(CSVLine *csvLineObj);
 
 #endif

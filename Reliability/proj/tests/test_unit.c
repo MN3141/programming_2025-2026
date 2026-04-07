@@ -12,7 +12,8 @@ char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH];
 char constructorStatus[CSV_CREATE_BUFF_SIZE];
 char entityStr[] = "Rhomaioi";
 
-int code = 10;
+char code[] = "FOO";
+int year = 2003;
 int civilWars = 100;
 int interStateWars = 99;
 
@@ -102,7 +103,7 @@ void test_CSV_LineSplitter_EmptyValues(void)
 void test_CSVLine_Create_Normal(void)
 {
 
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
     char expectedStatus[] = CSV_OBJ_CREATED_OK;
 
     TEST_ASSERT_EQUAL_STRING(expectedStatus, constructorStatus);
@@ -111,17 +112,17 @@ void test_CSVLine_Create_Normal(void)
 /* Test if the constructor copies the address or the content of entity string*/
 void test_CSVLine_Create_Entity_Copy(void)
 {
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
     char *entityAddr = entityStr;
     char *constructorAddr = myObj->Entity;
 
     TEST_ASSERT_NOT_EQUAL((uintptr_t)entityStr, (uintptr_t)myObj->Entity);
 }
 
-// /* Test if the memory allocated for entity is freed*/
+/* Test if the memory allocated for entity is freed*/
 void test_CSVLine_Destroy_Entity(void)
 {
-    CSVLine *myObj = CSVLine_Create(entityStr, code, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
     CSVLine_Destroy(myObj);
     char *entityAddr = myObj->Entity;
 
