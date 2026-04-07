@@ -10,6 +10,7 @@
 #define CSV_OBJ_CREATED_OK "OK"
 #define CSV_OBJ_CREATED_ERROR "Could allocate memory for object!"
 #define CSV_ENTITY_ERROR "Could not assign entity!"
+#define CSV_CODE_ERROR "Could not assing code!"
 
 #define MAX_LINE_LENGTH 100
 #define MAX_FILE_SIZE 1300
@@ -19,7 +20,7 @@
 typedef struct
 {
     char *Entity;
-    int Code;
+    char *Code;
     int Year;
     int CivilWars;
     int InterstateWars;
@@ -27,7 +28,7 @@ typedef struct
 
 int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
 int LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
-CSVLine *CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
+CSVLine *CSVLine_Create(char entity[], char code[], unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
 void CSVLine_Destroy(CSVLine *csvLineObj);
 
 #endif
