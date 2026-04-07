@@ -74,32 +74,31 @@ int LineSplitter(char fileLine[], char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH])
     return LINE_SPLITTER_OK;
 }
 
-int CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, CSVLine *csvLineObj)
+CSVLine *CSVLine_Create(char entity[], int code, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE])
 {
 
-    csvLineObj = malloc(sizeof(CSVLine));
+    CSVLine *csvLineObj = malloc(sizeof(CSVLine));
 
     if (csvLineObj != NULL)
     {
+        strcpy(constructorStatus, CSV_OBJ_CREATED_OK);
 
         csvLineObj->Entity = malloc(strlen(entity) + 1);
 
         if (csvLineObj->Entity != NULL)
-        {
             strcpy(csvLineObj->Entity, entity);
-
-            csvLineObj->Code = code;
-            csvLineObj->CivilWars = civilWars;
-            csvLineObj->InterstateWars = interStateWars;
-            return CSV_OBJ_CREATED_OK;
-        }
-
         else
-            return CSV_ENTITY_WARNING;
+            strcpy(constructorStatus, CSV_ENTITY_ERROR);
+
+        csvLineObj->Code = code;
+        csvLineObj->CivilWars = civilWars;
+        csvLineObj->InterstateWars = interStateWars;
     }
 
     else
-        return CSV_OBJ_CREATED_ERROR;
+        strcpy(constructorStatus, CSV_OBJ_CREATED_ERROR);
+
+    return csvLineObj;
 }
 
 void CSVLine_Destroy(CSVLine *csvLineObj)
@@ -112,4 +111,5 @@ void CSVLine_Destroy(CSVLine *csvLineObj)
     }
 
     free(csvLineObj);
+    csvLineObj = NULL;
 }
