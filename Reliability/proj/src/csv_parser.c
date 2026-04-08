@@ -92,11 +92,11 @@ CSVLine *CSVLine_Create(char entity[], char code[], unsigned int year, unsigned 
         else
             strcpy(constructorStatus, CSV_ENTITY_ERROR);
 
-        csvLineObj->Code = malloc(strlen(code)+1);
-        if(csvLineObj->Code != NULL)
-            strcpy(csvLineObj->Code,code);
+        csvLineObj->Code = malloc(strlen(code) + 1);
+        if (csvLineObj->Code != NULL)
+            strcpy(csvLineObj->Code, code);
         else
-            strcpy(constructorStatus,CSV_CODE_ERROR);
+            strcpy(constructorStatus, CSV_CODE_ERROR);
 
         csvLineObj->Year = year;
         csvLineObj->CivilWars = civilWars;
@@ -122,4 +122,17 @@ void CSVLine_Destroy(CSVLine *csvLineObj)
 
     free(csvLineObj);
     csvLineObj = NULL;
+}
+
+int CSV_Analyzer(CSVLine *csvLines[], int numElems)
+{
+    int maxCivilWars = -1;
+
+    for (int i = 0; i < numElems; i++)
+    {
+        if (csvLines[i]->CivilWars > maxCivilWars)
+            maxCivilWars = csvLines[i]->CivilWars;
+    }
+
+    return maxCivilWars;
 }

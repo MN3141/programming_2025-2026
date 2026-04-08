@@ -6,6 +6,7 @@
 
 char csvBuffer[MAX_FILE_SIZE][MAX_LINE_LENGTH];
 char tokenBuffer[MAX_TOKENS][MAX_LINE_LENGTH];
+char tokenBuffer2[MAX_TOKENS][MAX_LINE_LENGTH];
 char constructorStatus[CSV_CREATE_BUFF_SIZE];
 
 void setUp(void)
@@ -71,7 +72,8 @@ void test_CSV_LineSplit_LineCreate()
 }
 
 /* Test basic scenario where the object is instantiated and then destroyed*/
-void test_CSVCreate_CSVDestroy(){
+void test_CSVCreate_CSVDestroy()
+{
 
     char entity[] = "SPQR";
     char code[] = "X";
@@ -84,6 +86,47 @@ void test_CSVCreate_CSVDestroy(){
 
     TEST_ASSERT_EQUAL_HEX32((uintptr_t)myObj, (uintptr_t)NULL);
 }
+
+void test_CSVCreate_CSVAnalyzer()
+{
+
+    char parsedLine[] = "Americas,,1800,231,0";
+    char parsedLine2[] = "SPQR,FOO,0,2000,0";
+
+    LineSplitter(parsedLine, tokenBuffer);
+    LineSplitter(parsedLine2, tokenBuffer2);
+
+    char entity[strlen(tokenBuffer[0]) + 1];
+    strcpy(entity, tokenBuffer[0]);
+    char entity2[strlen(tokenBuffer2[0]) + 1];
+    strcpy(entity2, tokenBuffer2[0]);
+
+    char code[strlen(tokenBuffer[1]) + 1];
+    strcpy(code, tokenBuffer[1]);
+    char code2[strlen(tokenBuffer2[1]) + 1];
+    strcpy(code2, tokenBuffer2[1]);
+
+    int year = atoi(tokenBuffer[2]);
+    int year2 = atoi(tokenBuffer2[2]);
+
+    int civilWars = atoi(tokenBuffer[3]);
+    int civilWars2 = atoi(tokenBuffer2[3]);
+
+    int interStateWars = atoi(tokenBuffer[4]);
+    int interStateWars2 = atoi(tokenBuffer2[4]);
+
+    int expectedMaxNum = 2000;
+
+    CSVLine *myObj0 = CSVLine_Create(entity, code, year, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj1 = CSVLine_Create(entity2, code2, year2, civilWars2, interStateWars2, constructorStatus);
+
+    CSVLine *csvArr[] = {myObj0, myObj1};
+
+    int actualMaxNum = CSV_Analyzer(csvArr, 2);
+
+    TEST_ASSERT_EQUAL_INT(expectedMaxNum, actualMaxNum);
+}
+
 int main(void)
 {
 
@@ -91,6 +134,7 @@ int main(void)
     RUN_TEST(test_CSV_LineRead_LineSplit);
     RUN_TEST(test_CSV_LineSplit_LineCreate);
     RUN_TEST(test_CSVCreate_CSVDestroy);
+    RUN_TEST(test_CSVCreate_CSVAnalyzer);
 
     return UNITY_END();
 }

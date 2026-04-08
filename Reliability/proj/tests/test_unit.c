@@ -129,6 +129,18 @@ void test_CSVLine_Destroy_Entity(void)
     TEST_ASSERT_EQUAL_HEX32((uintptr_t)myObj->Entity, (uintptr_t)NULL);
 }
 
+/* Determine the maximum number of civil wars for two CSV line objects*/
+void test_CSV_Analyzer_Basic()
+{
+    int expectedMaxNum = 9999;
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, expectedMaxNum, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2};
+
+    int actualMaxNum = CSV_Analyzer(csvArr, 2);
+
+    TEST_ASSERT_EQUAL_INT(expectedMaxNum, actualMaxNum);
+}
 int main(void)
 {
     UNITY_BEGIN();
@@ -140,6 +152,7 @@ int main(void)
     RUN_TEST(test_CSVLine_Create_Normal);
     RUN_TEST(test_CSVLine_Create_Entity_Copy);
     RUN_TEST(test_CSVLine_Destroy_Entity);
+    RUN_TEST(test_CSV_Analyzer_Basic);
 
     return UNITY_END();
 }

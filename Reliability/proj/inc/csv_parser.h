@@ -2,7 +2,7 @@
 #define CSVPARSER
 
 #define OK_CODE 0
-#define FILE_OPEN_ERR_CODE -1 /* Cannot open given file*/
+#define FILE_OPEN_ERR_CODE -1   /* Cannot open given file*/
 #define FILE_IS_DIR_ERR_CODE -2 /* Given file is actually a path (applicable to Linux systems)*/
 
 #define LINE_SPLITTER_OK OK_CODE
@@ -26,9 +26,14 @@ typedef struct
     int InterstateWars;
 } CSVLine;
 
+/* File processing*/
 int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
 int LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
+
+/* Object constructor and destructor*/
 CSVLine *CSVLine_Create(char entity[], char code[], unsigned int year, unsigned int civilWars, unsigned int interStateWars, char constructorStatus[CSV_CREATE_BUFF_SIZE]);
 void CSVLine_Destroy(CSVLine *csvLineObj);
 
+/* Utils*/
+int CSV_Analyzer(CSVLine *csvLines[], int numElems);
 #endif
