@@ -87,11 +87,13 @@ void test_CSVCreate_CSVDestroy()
     TEST_ASSERT_EQUAL_HEX32((uintptr_t)myObj, (uintptr_t)NULL);
 }
 
+/* Test basic scenario where for computing max value amongst created CSV lines*/
 void test_CSVCreate_CSVAnalyzer()
 {
 
     char parsedLine[] = "Americas,,1800,231,0";
     char parsedLine2[] = "SPQR,FOO,0,2000,0";
+    AnalysisResult analysis;
 
     LineSplitter(parsedLine, tokenBuffer);
     LineSplitter(parsedLine2, tokenBuffer2);
@@ -119,10 +121,11 @@ void test_CSVCreate_CSVAnalyzer()
 
     CSVLine *myObj0 = CSVLine_Create(entity, code, year, civilWars, interStateWars, constructorStatus);
     CSVLine *myObj1 = CSVLine_Create(entity2, code2, year2, civilWars2, interStateWars2, constructorStatus);
-
     CSVLine *csvArr[] = {myObj0, myObj1};
 
-    int actualMaxNum = CSV_Analyzer(csvArr, 2);
+    CSV_Analyzer(csvArr, 2, &analysis);
+
+    int actualMaxNum = analysis.Max;
 
     TEST_ASSERT_EQUAL_INT(expectedMaxNum, actualMaxNum);
 }

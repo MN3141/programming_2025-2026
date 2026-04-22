@@ -10,12 +10,15 @@
 #define CSV_OBJ_CREATED_OK "OK"
 #define CSV_OBJ_CREATED_ERROR "Could allocate memory for object!"
 #define CSV_ENTITY_ERROR "Could not assign entity!"
-#define CSV_CODE_ERROR "Could not assing code!"
+#define CSV_CODE_ERROR "Could not assign code!"
 
 #define MAX_LINE_LENGTH 100
 #define MAX_FILE_SIZE 1300
 #define MAX_TOKENS 6
 #define CSV_CREATE_BUFF_SIZE 34
+
+#define ANALYSIS_RESULT_OK OK_CODE
+#define ANALYSIS_RESULT_EMPTY_WARNING -3 /* The given number of elements is null*/
 
 typedef struct
 {
@@ -26,6 +29,14 @@ typedef struct
     int InterstateWars;
 } CSVLine;
 
+typedef struct
+{
+    int Max;
+    int Min;
+    float Mean;
+    float Median;
+} AnalysisResult;
+
 /* File processing*/
 int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH]);
 int LineSplitter(char fileLine[], char splitterBuffer[MAX_TOKENS][MAX_LINE_LENGTH]);
@@ -35,5 +46,5 @@ CSVLine *CSVLine_Create(char entity[], char code[], unsigned int year, unsigned 
 void CSVLine_Destroy(CSVLine *csvLineObj);
 
 /* Utils*/
-int CSV_Analyzer(CSVLine *csvLines[], int numElems);
+int CSV_Analyzer(CSVLine *csvLines[], int numElems, AnalysisResult *analysis);
 #endif

@@ -130,17 +130,108 @@ void test_CSVLine_Destroy_Entity(void)
 }
 
 /* Determine the maximum number of civil wars for two CSV line objects*/
-void test_CSV_Analyzer_Basic()
+void test_CSV_Analyzer_Max()
 {
     int expectedMaxNum = 9999;
+    AnalysisResult analysis;
+
     CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
     CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, expectedMaxNum, interStateWars, constructorStatus);
     CSVLine *csvArr[] = {myObj, myObj2};
 
-    int actualMaxNum = CSV_Analyzer(csvArr, 2);
+    CSV_Analyzer(csvArr, 2, &analysis);
+    int actualMaxNum = analysis.Max;
 
     TEST_ASSERT_EQUAL_INT(expectedMaxNum, actualMaxNum);
 }
+
+/* Determine the minimum number of civil wars for two CSV line objects*/
+void test_CSV_Analyzer_Min()
+{
+
+    int expectedMinNum = 1;
+    AnalysisResult analysis;
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, expectedMinNum, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2};
+
+    CSV_Analyzer(csvArr, 2, &analysis);
+    int actualMinNum = analysis.Min;
+
+    TEST_ASSERT_EQUAL_INT(expectedMinNum, actualMinNum);
+}
+
+/* Determine the maximum number of civil wars for two CSV line objects*/
+void test_CSV_Analyzer_Mean()
+{
+    int civilWars2 = 140;
+    float expectedMean = (civilWars + civilWars2) / 2;
+    AnalysisResult analysis;
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, civilWars2, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2};
+
+    CSV_Analyzer(csvArr, 2, &analysis);
+    int actualMeanNum = analysis.Mean;
+
+    TEST_ASSERT_EQUAL_INT(expectedMean, actualMeanNum);
+}
+
+/* Determine the median value in the scenario of odd number of elements*/
+void test_CSV_Analyzer_Median_Odd()
+{
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, 5, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, 10, interStateWars, constructorStatus);
+    CSVLine *myObj3 = CSVLine_Create(entityStr, code, year, 17, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2, myObj3};
+    AnalysisResult analysis;
+    float expectedMedianNum = 10;
+
+    CSV_Analyzer(csvArr, 3, &analysis);
+    float actualMedianNum = analysis.Median;
+
+    TEST_ASSERT_EQUAL_INT(expectedMedianNum, actualMedianNum);
+}
+
+/* Determine the median value in the scenario of even number of elements*/
+void test_CSV_Analyzer_Median_Even()
+{
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, 5, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, 10, interStateWars, constructorStatus);
+    CSVLine *myObj3 = CSVLine_Create(entityStr, code, year, 17, interStateWars, constructorStatus);
+    CSVLine *myObj4 = CSVLine_Create(entityStr, code, year, 20, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2, myObj3, myObj4};
+    AnalysisResult analysis;
+    float expectedMedianNum = 13.5;
+
+    CSV_Analyzer(csvArr, 4, &analysis);
+    float actualMedianNum = analysis.Median;
+
+    TEST_ASSERT_EQUAL_INT(expectedMedianNum, actualMedianNum);
+}
+
+/* Check the behaviour when given a null counter of elemnts
+NOTE: We are not concerned here with the scenario where the
+actual list has elements but the counter is null;
+Garbage In -> Garbage Out*/
+void test_CSV_Analyzer_Empty()
+{
+
+    AnalysisResult analysis;
+    int expectedAnalysisStatus = ANALYSIS_RESULT_EMPTY_WARNING;
+
+    CSVLine *myObj = CSVLine_Create(entityStr, code, year, civilWars, interStateWars, constructorStatus);
+    CSVLine *myObj2 = CSVLine_Create(entityStr, code, year, 999, interStateWars, constructorStatus);
+    CSVLine *csvArr[] = {myObj, myObj2};
+
+    int actualAnalysisStatus = CSV_Analyzer(csvArr, 0, &analysis);
+    TEST_ASSERT_EQUAL_INT(expectedAnalysisStatus, actualAnalysisStatus);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -152,7 +243,12 @@ int main(void)
     RUN_TEST(test_CSVLine_Create_Normal);
     RUN_TEST(test_CSVLine_Create_Entity_Copy);
     RUN_TEST(test_CSVLine_Destroy_Entity);
-    RUN_TEST(test_CSV_Analyzer_Basic);
+    RUN_TEST(test_CSV_Analyzer_Max);
+    RUN_TEST(test_CSV_Analyzer_Empty);
+    RUN_TEST(test_CSV_Analyzer_Min);
+    RUN_TEST(test_CSV_Analyzer_Mean);
+    RUN_TEST(test_CSV_Analyzer_Median_Odd);
+    RUN_TEST(test_CSV_Analyzer_Median_Even);
 
     return UNITY_END();
 }

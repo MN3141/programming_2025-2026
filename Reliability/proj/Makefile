@@ -38,6 +38,9 @@ test-unit:$(unit_tst_srcs) | setup
 test-int:$(integration_tst_srcs) | setup
 	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -g -o $(build_dir)/integration_tst_$(proj).elf
 
+test-sys: $(system_tst_srcs) | setup
+	@gcc $^ $(tst_inc) $(src_dir)/csv_parser.c $(DBG_FLAG) -g -o $(build_dir)/system_tst_$(proj).elf
+
 help:
 	@echo "Basic makefile script"
 	@echo "Available build options:"

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <limits.h>
 #include "csv_parser.h"
 
 int FileParser(char filePath[], char parserBuffer[][MAX_LINE_LENGTH])
@@ -124,15 +125,61 @@ void CSVLine_Destroy(CSVLine *csvLineObj)
     csvLineObj = NULL;
 }
 
-int CSV_Analyzer(CSVLine *csvLines[], int numElems)
+int CSV_Analyzer(CSVLine *csvLines[], int numElems, AnalysisResult *analysis)
 {
-    int maxCivilWars = -1;
+    if (numElems <= 0)
+        return ANALYSIS_RESULT_EMPTY_WARNING;
+
+    int maxCivilWars = INT_MIN;
+    int minCivilWars = INT_MAX;
+    float meanCivilWars = 0;
+    float medianCivilWars = 0;
 
     for (int i = 0; i < numElems; i++)
     {
+        meanCivilWars += csvLines[i]->CivilWars;
+
         if (csvLines[i]->CivilWars > maxCivilWars)
             maxCivilWars = csvLines[i]->CivilWars;
+
+        if (csvLines[i]->CivilWars < minCivilWars)
+            minCivilWars = csvLines[i]->CivilWars;
     }
 
-    return maxCivilWars;
+    for (int i = 0; i < numElems - 1; i++)
+    {
+        for (int j = i + 1; j < numElems; j++)
+        {
+            int x = csvLines[i]->CivilWars;
+            int y = csvLines[j]->CivilWars;
+
+            if (x > y)
+            {
+                int temp = x;
+                csvLines[i]->CivilWars = y;
+
+                csvLines[j]->CivilWars = temp;
+            }
+        }
+    }
+
+    if (numElems % 2 == 1)
+    {
+        int index = numElems / 2;
+        medianCivilWars = csvLines[index]->CivilWars;
+    }
+    else
+    {
+        int index0 = (numElems - 1) / 2;
+        int index1 = numElems / 2;
+
+        medianCivilWars = (csvLines[index0]->CivilWars + csvLines[index1]->CivilWars) / 2;
+    }
+
+    analysis->Max = maxCivilWars;
+    analysis->Min = minCivilWars;
+    analysis->Mean = meanCivilWars / numElems;
+    analysis->Median = medianCivilWars;
+
+    return ANALYSIS_RESULT_OK;
 }
